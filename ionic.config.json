@@ -1,7 +1,8 @@
 {
   "name": "ng-booth-prabhari",
   "integrations": {
-    "capacitor": {}
+    "capacitor": {},
+    "cordova": {}
   },
   "type": "angular"
 }

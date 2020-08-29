@@ -1,0 +1,20 @@
+export interface Voter {
+    boothCode: string,
+    serialNo: number,
+    voterName: string,
+    guardianName: string,
+    houseNo: string,
+    address: string,
+    gender: string,
+    age: number,
+    idCardNo: string,
+    phoneNo: string,
+    religion: string,
+    caste: string,
+    outOfStation: boolean,
+    dead: boolean,
+    panchayatVote: string,
+    blockVote: string,
+    districtVote: string,
+    voted: boolean
+}

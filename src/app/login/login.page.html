@@ -1,0 +1,27 @@
+<ion-content text-center class="vertical-align-content">
+  <ion-card class="login-card">
+    <ion-card-header class="ion-text-center">
+      <ion-item class="ion-margin-top ion-margin-bottom" color="dark">
+        <h1 style="font-weight: bold;color: rgb(241, 60, 166);">Login</h1>
+        <ion-button slot="end" [routerLink]="['/register']" color="warning">
+          <ion-icon slot="icon-only" name="person-add"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item class="ion-margin-top ion-margin-bottom">
+        <ion-label class="label-class" position="floating">Phone No</ion-label>
+        <ion-input type="tel" required [(ngModel)]="user.phoneNo"></ion-input>
+      </ion-item>
+      <ion-item class="ion-margin-top ion-margin-bottom">
+        <ion-label class="label-class" position="floating">Password</ion-label>
+        <ion-input [type]="passwordType" required [(ngModel)]="user.password"></ion-input>
+        <ion-button slot="end" (click)="showHidePassword()" color="light">
+          <ion-icon slot="icon-only" [name]="passwordEyeIcon"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-button color="dark" class="ion-margin-top ion-margin-bottom" expand="full" (click)="login(user)">Sign In
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

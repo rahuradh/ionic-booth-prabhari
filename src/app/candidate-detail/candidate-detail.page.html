@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-title>Candidate Detail</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="goToCandidatePage()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Candidate Name</ion-label>
+    <ion-input type="text" required [(ngModel)]="candidate.candidateName" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Pary Code</ion-label>
+    <ion-input placeholder="Eg: NDA" type="text" required [(ngModel)]="candidate.partyCode" [readonly]="readOnlyMode">
+    </ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Candidate Color</ion-label>
+    <ion-select [interfaceOptions]="customInterfaceOptions" interface="action-sheet" required
+      [(ngModel)]="candidate.candidateColor">
+      <ion-select-option value="#FF9200" class="orange-option">Orange</ion-select-option>
+      <ion-select-option value="#3498DB" class="blue-option">Blue</ion-select-option>
+      <ion-select-option value="#C70039" class="red-option">Red</ion-select-option>
+      <ion-select-option value="#BABCBD" class="dark-option">Dark</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+</ion-content>

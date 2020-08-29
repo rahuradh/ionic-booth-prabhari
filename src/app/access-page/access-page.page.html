@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-title>Access Status</ion-title>
+    <ion-buttons slot="start">
+      <ion-button color="dark" (click)="goToDashboard()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card color="success" *ngIf="isAdminApproved">
+    <ion-card-header>
+      <ion-text>
+        <h1>Approval Status</h1>
+      </ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text>
+        <h2>Access has been approved.</h2>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="warning" *ngIf="!isAdminApproved">
+    <ion-card-header>
+      <ion-text>
+        <h1>Approval Status</h1>
+      </ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text>
+        <h2>Access approval is pending.</h2>
+        <h3>Please contact admin.</h3>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="warning" *ngIf="!isPaymentSuccess">
+    <ion-card-header>
+      <ion-text>
+        <h2>Payment Status</h2>
+      </ion-text>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-text>
+        <h2>Payment is Pending.</h2>
+        <h3>If you have alredy done your payment please contact admin.</h3>
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,112 @@
+<ion-header [translucent]="false">
+  <ion-toolbar>
+    <ion-item>
+      <ion-label style="font-weight: bold;">Add Search Condition :</ion-label>
+      <ion-select [(ngModel)]="selectedValues" multiple="true" (ionChange)="searchComboOnChange($event)">
+        <ion-select-option value="religion">Religion</ion-select-option>
+        <ion-select-option value="caste">Caste</ion-select-option>
+        <ion-select-option value="gender">Gender</ion-select-option>
+        <ion-select-option value="candidate">Candidate</ion-select-option>
+        <ion-select-option value="isDead">Dead</ion-select-option>
+        <ion-select-option value="isVoted">Voted</ion-select-option>
+        <ion-select-option value="isOut">Out of Station</ion-select-option>
+        <ion-select-option value="ageRange">Age</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item *ngIf="showReligionCombo">
+    <ion-label class="label-class" position="floating">Religion :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="religionCode"
+      (ionChange)="religionComboOnChange($event)">
+      <ion-select-option *ngFor="let religion of religionList" [value]="religion.code">{{religion.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="showCasteCombo">
+    <ion-label class="label-class" position="floating">Caste :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="casteCode">
+      <ion-select-option *ngFor="let caste of casteList" [value]="caste.code">{{caste.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="showGenderCombo">
+    <ion-label class="label-class" position="floating">Gender :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="genderCode">
+      <ion-select-option value="Male">Male</ion-select-option>
+      <ion-select-option value="Female">Female</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="showElectionBodyCombo">
+    <ion-label class="label-class" position="floating">Election Body :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="electionBodyCode"
+      (ionChange)="electionBodyComboOnChange($event)">
+      <ion-select-option value="panchayat">Panchayat</ion-select-option>
+      <ion-select-option value="blockPanchayat">Block Panchayat</ion-select-option>
+      <ion-select-option value="districtPanchayat">District Panchayat</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="showCandidateCombo">
+    <ion-label class="label-class" position="floating">Candidate :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="candidateCode">
+      <ion-select-option *ngFor="let candidate of candidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="showIsDeadField">
+    <ion-label class="label-class">Dead :</ion-label>
+    <ion-toggle color="primary" color="danger" [(ngModel)]="isDead"></ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="showIsVotedField">
+    <ion-label class="label-class">Voted :</ion-label>
+    <ion-toggle color="primary" color="success" [(ngModel)]="isVoted"></ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="showIsOOSField">
+    <ion-label class="label-class">Out Of Station :</ion-label>
+    <ion-toggle color="primary" color="warning" [(ngModel)]="isOOS"></ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="showAgeRangeField">
+    <ion-label class="label-class">Age :</ion-label>
+    <ion-range dualKnobs="true" min="18" max="125" pin="true" [(ngModel)]="ageRange" color="primary">
+      <ion-icon size="small" slot="start" name="chevron-forward"></ion-icon>
+      <ion-icon slot="end" name="chevron-back"></ion-icon>
+    </ion-range>
+  </ion-item>
+
+  <ion-button *ngIf="showSearchButton" color="primary" expand="block" (click)="search()">Search
+  </ion-button>
+
+  <ion-item *ngIf="showRecordCount">
+    <ion-label color="dark" style="font-weight: bold;">{{recordCount}} Voters</ion-label>
+  </ion-item>
+
+  <ion-list lines="none" *ngFor="let voter of lazyLoadingVotersList">
+    <ion-item class="no-padding">
+      <ion-avatar slot="start">
+        <img [src]="voter.gender">
+      </ion-avatar>
+      <ion-label (click)="openDetailPage(voter)">
+        <div class="voter-name-class">
+          <h2 style="font-weight: bold;color: rgb(241, 60, 166);">{{voter.serialNo}}&nbsp;&nbsp; </h2>
+          <h2 style="font-weight: bold;">{{voter.voterName}}</h2>
+          <h2 style="font-weight: bold;color: #F1948A;">&nbsp;({{voter.age}})</h2>
+        </div>
+        <p>{{voter.houseNo}}, {{voter.address}}</p>
+        <p style="font-weight: bold;">{{voter.voterId}}</p>
+        <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
+      </ion-label>
+      <ion-button slot="end" shape="round" (click)="callVoter(voter.phoneNo)" color="primary"
+        *ngIf="!voter.isPhoneNoExist">
+        <ion-icon slot="icon-only" name="call"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+  <ion-img *ngIf="!lazyLoadingVotersList || lazyLoadingVotersList.length === 0 && showSearchButton"
+    src=".././../assets/icon/VoterNotFoundIcon.png"></ion-img>
+  <ion-infinite-scroll threshold="20px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more voters...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

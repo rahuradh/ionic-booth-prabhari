@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-searchbar placeholder="Eg:123" (ionInput)="filterList($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list lines="none">
+    <ion-item-sliding *ngFor="let voter of lazyLoadingVotersList">
+      <ion-item class="no-padding">
+        <ion-avatar slot="start">
+          <img [src]="voter.gender">
+        </ion-avatar>
+        <ion-label (click)="openDetailPage(voter)">
+          <div class="voter-name-class">
+            <h1 style="font-weight: bold;color: rgb(241, 60, 166);">{{voter.serialNo}}&nbsp;</h1>
+            <h2 style="font-weight: bold;">{{voter.voterName}}</h2>
+            <h2 style="font-weight: bold;color: #F1948A;">&nbsp;({{voter.age}})</h2>
+          </div>
+          <p>{{voter.houseNo}}, {{voter.address}}</p>
+          <p style="font-weight: bold;">{{voter.voterId}}</p>
+          <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
+        </ion-label>
+        <ion-button slot="end" shape="round" (click)="callVoter(voter.phoneNo)" color="primary"
+          *ngIf="!voter.isPhoneNoExist">
+          <ion-icon slot="icon-only" name="call"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item-divider>
+        <ion-chip *ngIf="voter.isDead" outline style="background:#eb445a">
+          <ion-label style="color:white;">Dead</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="voter.isOutOfStation" outline style="background:#92949c">
+          <ion-label style="color:white;">Out</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="voter.isVoted" style="background:#2dd36f">
+          <ion-label style="color:white;">Voted</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="!voter.isVoted&&!voter.isDead&&!voter.isOutOfStation" style="background:#ffc409">
+          <ion-label style="color:white;">Not Voted</ion-label>
+        </ion-chip>
+      </ion-item-divider>
+
+      <ion-item-options side="start" *ngIf="hasAccess">
+        <ion-item-option color="success" (click)="setVoteById(voter.id,voter.isVoted=true)">
+          <ion-icon slot="icon-only" name="happy-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end" *ngIf="hasAccess">
+        <ion-item-option color="warning" (click)="setVoteById(voter.id,voter.isVoted=false)">
+          <ion-icon slot="icon-only" name="sad-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <ion-img *ngIf="!lazyLoadingVotersList || lazyLoadingVotersList.length === 0"
+    src=".././../assets/icon/VoterNotFoundIcon.png"></ion-img>
+  <ion-infinite-scroll threshold="20px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more voters...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

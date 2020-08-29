@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar color="light">
+    <ion-text color="danger" class="ion-text-center">
+      <h1 style="font-weight: bold;">{{voter.serialNo}}</h1>
+    </ion-text>
+    <ion-text [color]="voterNameColor" class="ion-text-center">
+      <h4 style="font-weight: bold;">{{voter.voterName}}</h4>
+    </ion-text>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="goToPrevious()" [disabled]="!readOnlyMode">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="medium" (click)="goToNext()" [disabled]="!readOnlyMode">
+        <ion-icon slot="icon-only" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar color="light">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToSearchPage()">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="hasAccess">
+      <ion-button shape="round" (click)="upateVoter()" color="primary" *ngIf="!readOnlyMode">
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" (click)="editVoter()" color="primary" *ngIf="readOnlyMode">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Voter Name</ion-label>
+    <ion-input type="text" required [(ngModel)]="voter.voterName" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Guardian Name</ion-label>
+    <ion-input type="text" required [(ngModel)]="voter.guardianName" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">House No</ion-label>
+    <ion-input type="text" required [(ngModel)]="voter.houseNo" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Address</ion-label>
+    <ion-input type="text" required [(ngModel)]="voter.address" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item [disabled]="readOnlyMode" class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Gender</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="voter.gender">
+      <ion-select-option value="Male">Male</ion-select-option>
+      <ion-select-option value="Female">Female</ion-select-option>
+      <ion-select-option value="Trans">Trans</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Age</ion-label>
+    <ion-input type="number" required [(ngModel)]="voter.age" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Id Card No</ion-label>
+    <ion-input type="text" required [(ngModel)]="voter.idCardNo" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Phone No</ion-label>
+    <ion-input type="tel" [(ngModel)]="voter.phoneNo" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class">Dead</ion-label>
+    <ion-toggle (ionChange)="onDeadToggleChange(voter.dead)" color="primary" color="danger" [(ngModel)]="voter.dead"
+      [disabled]="readOnlyMode"></ion-toggle>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class">Out of Station</ion-label>
+    <ion-toggle color="warning" [(ngModel)]=" voter.outOfStation" [disabled]="readOnlyMode||voter.dead">
+    </ion-toggle>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Religion</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.religion" [disabled]="readOnlyMode"
+      (ionChange)="religionComboOnChange($event)">
+      <ion-select-option *ngFor="let religion of religionList" [value]="religion.code">{{religion.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Caste</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.caste" [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let caste of casteList" [value]="caste.code">{{caste.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Panchayat Vote :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.panchayatVote"
+      [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of panchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Block Vote For :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.blockVote" [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of blockPanchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">District Vote For :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.districtVote"
+      [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of districtPanchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+</ion-content>

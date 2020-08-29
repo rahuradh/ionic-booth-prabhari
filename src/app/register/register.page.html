@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Register New User</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-label class="label-class" position="floating">Name</ion-label>
+    <ion-input type="text" required [(ngModel)]="user.name"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-label class="label-class" position="floating">Party Responsibility</ion-label>
+    <ion-input placeholder="Eg: Booth IT Cell Convenor" type="text" required [(ngModel)]="user.partyResponsibility">
+    </ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-label class="label-class" position="floating">Access Type</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="user.accessType"
+      (ionChange)="accessTypeComboOnChange($event)">
+      <ion-select-option value="Booth">Booth [Read/Write Access for all Booths]</ion-select-option>
+      <ion-select-option value="Ward">Ward [Read Access for all wards]</ion-select-option>
+      <ion-select-option value="LocalBody">Local Body [Read Access for all local bodies]</ion-select-option>
+      <ion-select-option value="Full">Full [Read/Write Access for all]</ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess||hasLocalBodyAccess||hasWardAccess"
+    lines="none">
+    <ion-label class="label-class">District</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="districtCode"
+      (ionChange)="districtComboOnChange($event)" required>
+      <ion-select-option *ngFor="let district of districtList" [value]="district.code">
+        {{district.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess||hasWardAccess" lines="none">
+    <ion-label class="label-class">Local Body</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="localBodyCode"
+      (ionChange)="localBodyComboOnChange($event)" required>
+      <ion-select-option *ngFor="let localBody of localBodyList" [value]="localBody.code">
+        {{localBody.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess" lines="none">
+    <ion-label class="label-class">Ward</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="wardCode"
+      (ionChange)="wardComboOnChange($event)" required>
+      <ion-select-option *ngFor="let ward of wardList" [value]="ward.code">{{ward.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-label class="label-class" position="floating">Phone Number</ion-label>
+    <ion-input type="tel" required [(ngModel)]="user.phoneNo"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-label class="label-class" position="floating">Password</ion-label>
+    <ion-input [type]="passwordType" required [(ngModel)]="user.password"></ion-input>
+    <ion-button slot="end" (click)="showHidePassword()" color="light">
+      <ion-icon slot="icon-only" [name]="passwordEyeIcon"></ion-icon>
+    </ion-button>
+  </ion-item>
+  <ion-button class="ion-margin-top ion-margin-bottom" color="primary" expand="full" (click)="register(user)">Register
+  </ion-button>
+</ion-content>

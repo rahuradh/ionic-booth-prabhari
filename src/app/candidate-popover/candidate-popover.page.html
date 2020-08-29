@@ -1,0 +1,10 @@
+<ion-list>
+  <ion-list-header>
+    <ion-text>
+      <h2>Manage Candidates</h2>
+    </ion-text>
+  </ion-list-header>
+  <ion-item button *ngFor="let item of electionCandidates" (click)="manageCandidates(item.code)">
+    {{item.name}}
+  </ion-item>
+</ion-list>

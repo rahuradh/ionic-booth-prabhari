@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-buttons slot="start">
+      <ion-button color="dark" [routerLink]="['/login']">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Choose Your Booth</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="vertical-align-content">
+  <ion-card class="login-card">
+    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+      <ion-label class="label-class">District</ion-label>
+      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="districtCode"
+        (ionChange)="districtComboOnChange($event)" required>
+        <ion-select-option *ngFor="let district of districtList" [value]="district.code">
+          {{district.name | uppercase}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+      <ion-label class="label-class">Local Body</ion-label>
+      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="localBodyCode"
+        (ionChange)="localBodyComboOnChange($event)" required>
+        <ion-select-option *ngFor="let localBody of localBodyList" [value]="localBody.code">
+          {{localBody.name | uppercase}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+      <ion-label class="label-class">Ward</ion-label>
+      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="wardCode"
+        (ionChange)="wardComboOnChange($event)" required>
+        <ion-select-option *ngFor="let ward of wardList" [value]="ward.code">{{ward.name | uppercase}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+      <ion-label class="label-class">Polling Station</ion-label>
+      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="pollingStationCode" required>
+        <ion-select-option *ngFor="let ps of pollingStationList" [value]="ps.code">{{ps.name | uppercase}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button color="warning" class="ion-margin-top ion-margin-bottom" expand="full" size="medium"
+      (click)="goToHome()">
+      <ion-icon slot="icon-only" name="arrow-forward-circle"></ion-icon>
+    </ion-button>
+  </ion-card>
+</ion-content>
