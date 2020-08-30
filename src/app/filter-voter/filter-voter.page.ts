@@ -43,6 +43,8 @@ export class FilterVoterPage implements OnInit {
 
   boothCode: string;
   accessType: string;
+  phoneNo: string;
+  callFrom: string;
   votersList: any[];
   candidateList: any[];
   public lazyLoadingVotersList: any[] = [];
@@ -54,8 +56,11 @@ export class FilterVoterPage implements OnInit {
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
     private callNumber: CallNumber) {
+
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
   }
 
   ngOnInit() {
@@ -289,7 +294,7 @@ export class FilterVoterPage implements OnInit {
 
 
   openDetailPage(voter) {
-    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/FilterPage");
+    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
   }
 
   generateVotersList(data) {
@@ -367,7 +372,7 @@ export class FilterVoterPage implements OnInit {
 
   addVotersToList() {
     if (this.votersList != null) {
-      for (let i = 0; i < 15 && this.recordCounter < this.votersList.length; i++, this.recordCounter++) {
+      for (let i = 0; i < 10 && this.recordCounter < this.votersList.length; i++, this.recordCounter++) {
         this.lazyLoadingVotersList.push(this.votersList[this.recordCounter])
       }
     }

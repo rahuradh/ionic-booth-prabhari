@@ -8,6 +8,9 @@ import { NavParams, NavController, PopoverController } from '@ionic/angular';
 })
 export class CandidatePopoverPage implements OnInit {
   boothCode: string;
+  accessType: string;
+  phoneNo: string;
+  callFrom: string;
   electionCandidates: any = [
     {
       code: "1",
@@ -26,6 +29,9 @@ export class CandidatePopoverPage implements OnInit {
     private navCtrl: NavController,
     private popoverController: PopoverController) {
     this.boothCode = this.navParams.get('boothCode');
+    this.accessType = this.navParams.get('accessType');
+    this.phoneNo = this.navParams.get('phoneNo');
+    this.callFrom = this.navParams.get('callFrom');
   }
 
   ngOnInit() {
@@ -33,11 +39,11 @@ export class CandidatePopoverPage implements OnInit {
 
   manageCandidates(code: string) {
     if (code == "1") {
-      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/panchayat");
+      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/panchayat");
     } else if (code == "2") {
-      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/blockPanchayat");
+      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/blockPanchayat");
     } else if (code == "3") {
-      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/districtPanchayat");
+      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/districtPanchayat");
     }
     this.popoverController.dismiss();
   }

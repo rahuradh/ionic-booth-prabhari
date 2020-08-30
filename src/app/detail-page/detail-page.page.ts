@@ -14,6 +14,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   boothCode: string;
   serialNo: string;
   accessType: string;
+  phoneNo: string;
   callFrom: string;
   hasAccess: boolean = false;
 
@@ -34,6 +35,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.serialNo = this.actRouter.snapshot.paramMap.get("serialNo");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
     if (this.accessType == "Full" || this.accessType == "Booth") {
       this.hasAccess = true;
@@ -104,11 +106,15 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   goToPrevious() {
     this.getVoter(String(Number(this.serialNo) - 1));
   }
-  goToSearchPage() {
+  goToCallerPage() {
     if (this.callFrom == "SearchPage") {
-      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/search-page/" + this.boothCode + "/" + this.accessType);
+      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+    } else if (this.callFrom == "StatusPage") {
+      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
+    } else if (this.callFrom == "FilterPage") {
+      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage" + "/filter-voter/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
     } else {
-      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/filter-voter/" + this.boothCode + "/" + this.accessType);
+      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
     }
   }
   editVoter() {

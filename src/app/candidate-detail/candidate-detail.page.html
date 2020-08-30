@@ -1,9 +1,19 @@
 <ion-header>
   <ion-toolbar class="ion-text-center">
-    <ion-title>Candidate Detail</ion-title>
+    <ion-title>{{toolbarTitle}}l</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="dark" (click)="goToCandidatePage()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      <ion-button (click)="goToCandidatePage()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button shape="round" (click)="upateCandidate()" *ngIf="!readOnlyMode" color="dark">
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" (click)="editCandidate()" *ngIf="readOnlyMode" color="dark">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -15,11 +25,11 @@
     <ion-input type="text" required [(ngModel)]="candidate.candidateName" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
-    <ion-label class="label-class" position="floating">Pary Code</ion-label>
+    <ion-label class="label-class" position="floating">Party Code</ion-label>
     <ion-input placeholder="Eg: NDA" type="text" required [(ngModel)]="candidate.partyCode" [readonly]="readOnlyMode">
     </ion-input>
   </ion-item>
-  <ion-item class="ion-margin-top ion-margin-bottom">
+  <ion-item class="ion-margin-top ion-margin-bottom" [disabled]="readOnlyMode">
     <ion-label class="label-class" position="floating">Candidate Color</ion-label>
     <ion-select [interfaceOptions]="customInterfaceOptions" interface="action-sheet" required
       [(ngModel)]="candidate.candidateColor">

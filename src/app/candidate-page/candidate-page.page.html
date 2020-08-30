@@ -1,9 +1,16 @@
 <ion-header>
   <ion-toolbar class="ion-text-center">
     <ion-title>{{toolbarTitle}}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button color="dark" (click)="goToStatusPage()">
-        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      <ion-button (click)="goToStatusPage()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="hasAccess">
+      <ion-button shape="round" (click)="createNewCandidate()" color="dark">
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -11,27 +18,31 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let candidate of candidateList; let i = index" class="ion-margin-top ion-margin-bottom"
-      (click)="openCandidateDetailPage(candidate)">
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <div [style.background-color]="candidate.candidateColor">
-              {{i+1}}
-            </div>
-          </ion-col>
-          <ion-col>
-            <div>
-              [{{candidate.partyCode}}]
-            </div>
-          </ion-col>
-          <ion-col>
-            <div>
-              {{candidate.candidateName}}
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-item>
+    <ion-item-sliding *ngFor="let candidate of candidateList; let i = index">
+      <ion-item class="ion-margin-top ion-margin-bottom" (click)="openCandidateDetailPage(candidate)">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-icon size="large" name="person" [style.background-color]="candidate.candidateColor"></ion-icon>
+            </ion-col>
+            <ion-col>
+              <div>
+                [{{candidate.partyCode}}]
+              </div>
+            </ion-col>
+            <ion-col>
+              <div>
+                {{candidate.candidateName}}
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item-options side="end" *ngIf="hasAccess">
+        <ion-item-option color="danger" (click)="deleteCandidateById(candidate.id)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 </ion-content>

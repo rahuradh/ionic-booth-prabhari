@@ -17,7 +17,6 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   public votersList: any[];
   public candidateList: any[];
   public candidateUpdateList: any[];
-  public boothStatusList: any[];
   public deadVotersList: any[];
   public outOfStationVoterList: any[];
   public panchayatCandidateList: any[];
@@ -33,6 +32,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
 
   private status = {} as Status;
   private boothCode: string;
+  private accessType: string;
+  private phoneNo: string;
+  private callFrom: string;
   private whiteSpace: string = '\xa0';
   private panchayathPrePollCandidateVoteList: any[] = [];
   private panchayathExitPollCandidateVoteList: any[] = [];
@@ -56,6 +58,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     private navCtrl: NavController,
     private popoverController: PopoverController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
+    this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
     this.getBoothDetailStatus();
   }
 
@@ -137,6 +142,24 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     loader.present();
     try {
       this.firestore.collection("pollingStationList", ref => ref.where('pollingStationCode', '==', this.boothCode)).snapshotChanges().subscribe(data => {
+        let panchayatCandidates = Number(this.panchayatCandidateList.length);
+        let blockPanchayatCandidates = Number(this.blockPanchayatCandidateList.length);
+        let districtPanchayatCandidates = Number(this.districtPanchayatCandidateList.length);
+        if (panchayatCandidates == 0 || panchayatCandidates == 1) {
+          panchayatCandidates = 0;
+        } else {
+          panchayatCandidates = panchayatCandidates - 1;
+        }
+        if (blockPanchayatCandidates == 0 || blockPanchayatCandidates == 1) {
+          blockPanchayatCandidates = 0;
+        } else {
+          blockPanchayatCandidates = blockPanchayatCandidates - 1;
+        }
+        if (districtPanchayatCandidates == 0 || districtPanchayatCandidates == 1) {
+          districtPanchayatCandidates = 0;
+        } else {
+          districtPanchayatCandidates = districtPanchayatCandidates - 1;
+        }
         data.map(booth => {
           this.status = {
             districtName: String(booth.payload.doc.data()['districtName']),
@@ -148,9 +171,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
             outOfStationVotes: Number(this.outOfStationVoterList.length),
             expectedPoll: Number(this.prePollVotersForCandidateList.length),
             totalPolled: Number(this.exitPollVotersForCandidateList.length),
-            panchayatCandidates: Number(this.panchayatCandidateList.length),
-            blockPanchayatCandidates: Number(this.blockPanchayatCandidateList.length),
-            districtPanchayatCandidates: Number(this.districtPanchayatCandidateList.length)
+            panchayatCandidates: panchayatCandidates,
+            blockPanchayatCandidates: blockPanchayatCandidates,
+            districtPanchayatCandidates: districtPanchayatCandidates
           }
         });
       });
@@ -183,7 +206,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
             id: candidate.payload.doc.id,
             boothCode: String(candidate.payload.doc.data()['boothCode']),
             electionBody: electionBody,
-            partyCode: String(candidate.payload.doc.data()['partyCode']),
+            partyCode: "[" + String(candidate.payload.doc.data()['partyCode']) + "]",
             candidateName: String(candidate.payload.doc.data()['candidateName']),
             candidateCode: candidateCode,
             candidateColor: String(candidate.payload.doc.data()['candidateColor']),
@@ -432,6 +455,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (panchayatCandidateList.length == 0 || panchayatCandidateList.length == 1) {
+      return;
+    }
     let panchayatCandidateListWithPrePollResult = panchayatCandidateList.sort((n1, n2) => {
       if (n1.prePollVoteCount < n2.prePollVoteCount) {
         return 1;
@@ -451,6 +477,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (panchayatCandidateList.length == 0 || panchayatCandidateList.length == 1) {
+      return;
+    }
     let panchayatCandidateListWithExitPollResult = panchayatCandidateList.sort((n1, n2) => {
       if (n1.exitPollVoteCount < n2.exitPollVoteCount) {
         return 1;
@@ -471,6 +500,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (blockPanchayatCandidateList.length == 0 || blockPanchayatCandidateList.length == 1) {
+      return;
+    }
     let blockPanchayatCandidateListWithPrePollResult = blockPanchayatCandidateList.sort((n1, n2) => {
       if (n1.prePollVoteCount < n2.prePollVoteCount) {
         return 1;
@@ -490,6 +522,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (blockPanchayatCandidateList.length == 0 || blockPanchayatCandidateList.length == 1) {
+      return;
+    }
     let blockPanchayatCandidateListWithExitPollResult = blockPanchayatCandidateList.sort((n1, n2) => {
       if (n1.exitPollVoteCount < n2.exitPollVoteCount) {
         return 1;
@@ -509,6 +544,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (districtPanchayatCandidateList.length == 0 || districtPanchayatCandidateList.length == 1) {
+      return;
+    }
     let districtPanchayatCandidateListWithPrePollResult = districtPanchayatCandidateList.sort((n1, n2) => {
       if (n1.prePollVoteCount < n2.prePollVoteCount) {
         return 1;
@@ -528,6 +566,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         return true;
       }
     });
+    if (districtPanchayatCandidateList.length == 0 || districtPanchayatCandidateList.length == 1) {
+      return;
+    }
     let districtPanchayatCandidateListWithExitPollResult = districtPanchayatCandidateList.sort((n1, n2) => {
       if (n1.exitPollVoteCount < n2.exitPollVoteCount) {
         return 1;
@@ -602,7 +643,12 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   async presentPopover(event: any) {
     const popover = await this.popoverController.create({
       component: CandidatePopoverPage,
-      componentProps: { boothCode: this.boothCode },
+      componentProps: {
+        boothCode: this.boothCode,
+        accessType: this.accessType,
+        phoneNo: this.phoneNo,
+        callFrom: this.callFrom
+      },
       cssClass: 'candidate-popover-class',
       event: event,
       translucent: true

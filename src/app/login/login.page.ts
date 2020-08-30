@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { ToastController, LoadingController, NavController } from '@ionic/angular';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class LoginPage implements OnInit {
   passwordType: string = "password";
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private afAuth: AngularFireAuth,
+    private firestore: AngularFirestore,
     private navCtrl: NavController) { }
 
   ngOnInit() {
@@ -26,9 +26,18 @@ export class LoginPage implements OnInit {
       });
       (await loader).present();
       try {
-        await this.afAuth.signInWithEmailAndPassword(user.phoneNo + "@gmail.com", user.password).then(data => {
-          console.log(data)
-          this.navCtrl.navigateRoot("dashboard/" + user.phoneNo);
+        this.firestore.collection("usersList", ref => ref.where('phoneNo', '==', user.phoneNo)).snapshotChanges().subscribe(data => {
+          if (data.length != 0) {
+            data.map(currentUser => {
+              if (currentUser.payload.doc.data()['password'] == user.password) {
+                this.navCtrl.navigateRoot("dashboard/" + user.phoneNo);
+              } else {
+                this.showToaster("The password you have entered is wrong.");
+              }
+            });
+          } else {
+            this.showToaster("This Phone Number is not registered yet.");
+          }
         });
       } catch (err) {
         this.showToaster(err);

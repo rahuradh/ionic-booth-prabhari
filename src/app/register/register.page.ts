@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { ToastController, LoadingController, NavController } from '@ionic/angular';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
@@ -31,7 +30,6 @@ export class RegisterPage implements OnInit {
 
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private afAuth: AngularFireAuth,
     private navCtrl: NavController,
     private firestore: AngularFirestore) {
     this.loadDistrictCombo();
@@ -40,6 +38,7 @@ export class RegisterPage implements OnInit {
   ngOnInit() { }
 
   async register(user: User) {
+    this.blockUpdateBackCall = true;
     if (this.formValidation()) {
       let loader = await this.loadingCtrl.create({
         message: "Please wait...."
@@ -59,11 +58,9 @@ export class RegisterPage implements OnInit {
             }
             this.user.isAdminApproved = false;
             this.blockUpdateBackCall = false;
-            // this.afAuth.createUserWithEmailAndPassword(user.phoneNo + "@gmail.com", user.password).then(data => {
             this.firestore.collection("usersList").add(this.user);
             this.navCtrl.navigateRoot("dashboard/" + user.phoneNo);
-            // });
-          } else {
+          } else if (this.blockUpdateBackCall) {
             this.showToaster("This Phone Number is already registered. Please try another.");
           }
         });

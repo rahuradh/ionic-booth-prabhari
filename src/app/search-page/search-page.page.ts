@@ -18,6 +18,8 @@ export class SearchPagePage implements OnInit {
 
   boothCode: string;
   accessType: string;
+  phoneNo: string;
+  callFrom: string;
   hasAccess: boolean = false;
 
   constructor(private loadingCtrl: LoadingController,
@@ -28,6 +30,9 @@ export class SearchPagePage implements OnInit {
     private callNumber: CallNumber) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+
     if (this.accessType == "Full" || this.accessType == "Booth") {
       this.hasAccess = true;
     }
@@ -123,7 +128,7 @@ export class SearchPagePage implements OnInit {
     loader.dismiss();
   }
   openDetailPage(voter) {
-    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/SearchPage");
+    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
   }
 
   async setVoteById(_id: string, isVoted: boolean) {
@@ -150,7 +155,7 @@ export class SearchPagePage implements OnInit {
   }
 
   addVotersToList() {
-    for (let i = 0; i < 15 && this.recordCounter < this.votersList.length; i++, this.recordCounter++) {
+    for (let i = 0; i < 10 && this.recordCounter < this.votersList.length; i++, this.recordCounter++) {
       this.lazyLoadingVotersList.push(this.votersList[this.recordCounter])
     }
   }

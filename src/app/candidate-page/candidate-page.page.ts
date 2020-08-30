@@ -10,18 +10,26 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class CandidatePagePage implements OnInit {
   boothCode: string;
-  electionBody: string;
   accessType: string;
+  phoneNo: string;
+  callFrom: string;
+  electionBody: string;
   toolbarTitle: string = "";
   candidateList: any;
+  hasAccess: boolean = false;
 
   constructor(private actRouter: ActivatedRoute,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private navCtrl: NavController) {
+
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
+    this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
     this.electionBody = this.actRouter.snapshot.paramMap.get("electionBody");
+
     if (this.electionBody == "panchayat") {
       this.toolbarTitle = "Panchayat Candidates";
     } else if (this.electionBody == "blockPanchayat") {
@@ -31,7 +39,9 @@ export class CandidatePagePage implements OnInit {
     } else {
       this.toolbarTitle = "Candidates"
     }
-    this.accessType = "Full";
+    if (this.accessType == "Full" || this.accessType == "Booth") {
+      this.hasAccess = true;
+    }
     this.getCandidateList();
   }
 
@@ -79,10 +89,19 @@ export class CandidatePagePage implements OnInit {
     }).then(toastData => toastData.present());
   }
   goToStatusPage() {
-    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/search-page/" + this.boothCode + "/" + this.accessType);
+    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
   }
 
   openCandidateDetailPage(candidate) {
-    this.navCtrl.navigateRoot("candidate-detail/" + candidate.id + "/" + this.boothCode + "/" + candidate.electionBody);
+    if (this.hasAccess) {
+      this.navCtrl.navigateRoot("candidate-detail/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + candidate.electionBody + "/" + candidate.id + "/" + 0);
+    }
+  }
+
+  deleteCandidateById(candidateId) {
+    this.firestore.doc("candidateList/" + candidateId).delete();
+  }
+  createNewCandidate() {
+    this.navCtrl.navigateRoot("candidate-detail/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + this.electionBody + "/" + "empty" + "/" + this.candidateList.length);
   }
 }

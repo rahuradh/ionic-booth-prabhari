@@ -25,41 +25,41 @@ const routes: Routes = [
     loadChildren: () => import('./access-page/access-page.module').then(m => m.AccessPagePageModule)
   },
   {
-    path: 'home/:boothCode/:accessType',
+    path: 'home/:boothCode/:accessType/:phoneNo/:callFrom',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
   {
-    path: 'home/:boothCode/:accessType',
+    path: 'home/:boothCode/:accessType/:phoneNo/:callFrom',
     component: HomePage,
     children: [
       {
-        path: 'search-page/:boothCode/:accessType',
+        path: 'search-page/:boothCode/:accessType/:phoneNo/:callFrom',
         loadChildren: () => import('./search-page/search-page.module').then(m => m.SearchPagePageModule)
       },
       {
-        path: 'status-page/:boothCode/:accessType',
+        path: 'status-page/:boothCode/:accessType/:phoneNo/:callFrom',
         loadChildren: () => import('./status-page/status-page.module').then(m => m.StatusPagePageModule)
       },
       {
-        path: 'filter-voter/:boothCode/:accessType',
+        path: 'filter-voter/:boothCode/:accessType/:phoneNo/:callFrom',
         loadChildren: () => import('./filter-voter/filter-voter.module').then(m => m.FilterVoterPageModule)
       },
     ]
   },
   {
-    path: 'detail-page/:boothCode/:serialNo/:accessType/:callFrom',
+    path: 'detail-page/:boothCode/:serialNo/:accessType/:phoneNo/:callFrom',
     loadChildren: () => import('./detail-page/detail-page.module').then(m => m.DetailPagePageModule)
-  },
-  {
-    path: 'candidate-page/:boothCode/:electionBody',
-    loadChildren: () => import('./candidate-page/candidate-page.module').then(m => m.CandidatePagePageModule)
   },
   {
     path: 'candidate-popover',
     loadChildren: () => import('./candidate-popover/candidate-popover.module').then(m => m.CandidatePopoverPageModule)
   },
   {
-    path: 'candidate-detail/:candidateId/:boothCode/:electionBody',
+    path: 'candidate-page/:boothCode/:accessType/:phoneNo/:callFrom/:electionBody',
+    loadChildren: () => import('./candidate-page/candidate-page.module').then(m => m.CandidatePagePageModule)
+  },
+  {
+    path: 'candidate-detail/:boothCode/:accessType/:phoneNo/:callFrom/:electionBody/:candidateId/:candidatesCount',
     loadChildren: () => import('./candidate-detail/candidate-detail.module').then(m => m.CandidateDetailPageModule)
   }
 ];

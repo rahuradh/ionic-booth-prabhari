@@ -256,7 +256,7 @@ export class DashboardPage implements OnInit {
   validateAccess() {
     if (this.isAdminApproved) {
       if (this.accessType == "Full") {
-        this.navCtrl.navigateRoot("home/" + this.pollingStationCode + "/" + this.accessType);
+        this.navCtrl.navigateRoot("home/" + this.pollingStationCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
       } else if (this.accessType == "Booth") {
         this.validateBoothAccessAndPayment();
       } else if (this.accessType == "Ward") {
@@ -317,7 +317,7 @@ export class DashboardPage implements OnInit {
         return false;
       });
       if (this.paymentDoneboothList.length != 0) {
-        this.navCtrl.navigateRoot("home/" + this.pollingStationCode + "/" + this.accessType);
+        this.navCtrl.navigateRoot("home/" + this.pollingStationCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
       } else {
         this.navCtrl.navigateRoot("access-page/" + true + "/" + false + "/" + this.phoneNo);
       }
