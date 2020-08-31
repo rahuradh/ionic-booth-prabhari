@@ -1,9 +1,13 @@
 <ion-header>
   <ion-toolbar class="ion-text-center">
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
     <ion-title>Register New User</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button [routerLink]="['/login']" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
@@ -64,6 +68,6 @@
       <ion-icon slot="icon-only" [name]="passwordEyeIcon"></ion-icon>
     </ion-button>
   </ion-item>
-  <ion-button class="ion-margin-top ion-margin-bottom" color="primary" expand="full" (click)="register(user)">Register
+  <ion-button class="ion-margin-top ion-margin-bottom" color="dark" expand="full" (click)="register(user)">Register
   </ion-button>
 </ion-content>

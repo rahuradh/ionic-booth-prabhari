@@ -26,7 +26,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   panchayatCandidateList: any;
   blockPanchayatCandidateList: any;
   districtPanchayatCandidateList: any;
-  voterNameColor: string = "dark";
+  voterNameColor: string = "";
   constructor(private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
@@ -82,9 +82,9 @@ export class DetailPagePage implements OnInit, AfterViewInit {
           }
         });
         if (this.voter.voted) {
-          this.voterNameColor = "primary";
+          this.voterNameColor = "success";
         } else {
-          this.voterNameColor = "dark";
+          this.voterNameColor = "";
         }
         this.loadCasteCombo(this.voter.religion);
       });

@@ -26,8 +26,6 @@ export class DashboardPage implements OnInit {
   accessCode: string;
   documentId: string;
 
-  backButtonSubscription;
-
   boothList: any = [];
   paymentDoneboothList: any = [];
 
@@ -38,9 +36,8 @@ export class DashboardPage implements OnInit {
     private platform: Platform,
     private actRouter: ActivatedRoute) {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
-    // this.phoneNo = "9605298484";
-    this.backButtonSubscription = this.platform.backButton.subscribe(() => {
-      // navigator['app'].exitApp();
+    this.platform.backButton.subscribe(() => {
+      this.navCtrl.navigateRoot("login/");
     });
   }
 

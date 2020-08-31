@@ -32,30 +32,42 @@ export class HomePage implements OnInit {
   ngOnInit() {
     if (this.callFrom == "SearchPage") {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+      this.searchTabClass = 'tab-selected';
+      this.statusTabClass = 'tab-unselected';
+      this.filterTabClass = 'tab-unselected';
     } else if (this.callFrom == "StatusPage") {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
+      this.searchTabClass = 'tab-unselected';
+      this.statusTabClass = 'tab-selected';
+      this.filterTabClass = 'tab-unselected';
     } else if (this.callFrom == "FilterPage") {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage" + "/filter-voter/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
+      this.searchTabClass = 'tab-unselected';
+      this.statusTabClass = 'tab-unselected';
+      this.filterTabClass = 'tab-selected';
     } else {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+      this.searchTabClass = 'tab-selected';
+      this.statusTabClass = 'tab-unselected';
+      this.filterTabClass = 'tab-unselected';
     }
   }
   goToSearchPage() {
+    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
     this.searchTabClass = 'tab-selected';
     this.statusTabClass = 'tab-unselected';
     this.filterTabClass = 'tab-unselected';
-    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
   }
   goToStatusPage() {
+    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
     this.searchTabClass = 'tab-unselected';
     this.statusTabClass = 'tab-selected';
     this.filterTabClass = 'tab-unselected';
-    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
   }
   goToFilterPage() {
+    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage" + "/filter-voter/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
     this.searchTabClass = 'tab-unselected';
     this.statusTabClass = 'tab-unselected';
     this.filterTabClass = 'tab-selected';
-    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage" + "/filter-voter/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
   }
 }

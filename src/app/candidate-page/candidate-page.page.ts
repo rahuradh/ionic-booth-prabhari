@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ToastController, LoadingController, NavController } from '@ionic/angular';
+import { ToastController, LoadingController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
@@ -22,7 +22,8 @@ export class CandidatePagePage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private platform: Platform) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
@@ -43,6 +44,9 @@ export class CandidatePagePage implements OnInit {
       this.hasAccess = true;
     }
     this.getCandidateList();
+    this.platform.backButton.subscribeWithPriority(10, () => {
+      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
+    });
   }
 
   ngOnInit() {

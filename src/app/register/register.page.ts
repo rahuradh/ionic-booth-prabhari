@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
-import { ToastController, LoadingController, NavController } from '@ionic/angular';
+import { ToastController, LoadingController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
@@ -27,12 +27,17 @@ export class RegisterPage implements OnInit {
   passwordEyeIcon: string = "eye";
   passwordType: string = "password";
   blockUpdateBackCall: boolean = true;
+  backButtonSubscription;
 
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private navCtrl: NavController,
-    private firestore: AngularFirestore) {
+    private firestore: AngularFirestore,
+    private platform: Platform) {
     this.loadDistrictCombo();
+    this.platform.backButton.subscribe(() => {
+      this.navCtrl.navigateRoot("login/");
+    });
   }
 
   ngOnInit() { }
@@ -126,9 +131,8 @@ export class RegisterPage implements OnInit {
       this.showToaster("Enter your Password.");
       return false;
     } else {
-      var pattern = new RegExp('^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$');
-      if (!pattern.test(this.user.password)) {
-        this.showToaster("Password must have min 6 char,atleast 1 num and 1 char.");
+      if (this.user.password.length < 6) {
+        this.showToaster("Password must have mininum 6 characters.");
         return false;
       }
     }
