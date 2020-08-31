@@ -3,6 +3,13 @@
     <ion-searchbar placeholder="Eg:123" (ionInput)="filterList($event)">
     </ion-searchbar>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToDashboard()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -22,8 +29,7 @@
           <p style="font-weight: bold;">{{voter.voterId}}</p>
           <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
         </ion-label>
-        <ion-button slot="end" shape="round" (click)="callVoter(voter.phoneNo)" color="primary"
-          *ngIf="!voter.isPhoneNoExist">
+        <ion-button slot="end" shape="round" href="tel:+91+voter.phoneNo" color="primary" *ngIf="!voter.isPhoneNoExist">
           <ion-icon slot="icon-only" name="call"></ion-icon>
         </ion-button>
       </ion-item>

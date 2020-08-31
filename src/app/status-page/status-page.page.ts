@@ -655,4 +655,8 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     });
     return await popover.present();
   }
+
+  goToDashboard() {
+    this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
+  }
 }

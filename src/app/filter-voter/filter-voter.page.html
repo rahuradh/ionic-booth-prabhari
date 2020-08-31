@@ -14,6 +14,13 @@
       </ion-select>
     </ion-item>
   </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToDashboard()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 <ion-content>
   <ion-item *ngIf="showReligionCombo">

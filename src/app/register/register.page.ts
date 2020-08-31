@@ -32,12 +32,8 @@ export class RegisterPage implements OnInit {
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private navCtrl: NavController,
-    private firestore: AngularFirestore,
-    private platform: Platform) {
+    private firestore: AngularFirestore) {
     this.loadDistrictCombo();
-    this.platform.backButton.subscribe(() => {
-      this.navCtrl.navigateRoot("login/");
-    });
   }
 
   ngOnInit() { }

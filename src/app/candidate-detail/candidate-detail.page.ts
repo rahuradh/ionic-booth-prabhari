@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 import { Candidate } from '../models/candidate.model';
@@ -10,6 +10,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./candidate-detail.page.scss'],
 })
 export class CandidateDetailPage implements OnInit {
+
   boothCode: string;
   accessType: string;
   phoneNo: string;
@@ -30,8 +31,7 @@ export class CandidateDetailPage implements OnInit {
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
-    private navCtrl: NavController,
-    private platform: Platform) {
+    private navCtrl: NavController) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
@@ -55,9 +55,6 @@ export class CandidateDetailPage implements OnInit {
     } else {
       this.readOnlyMode = false;
     }
-    this.platform.backButton.subscribeWithPriority(10, () => {
-      this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + this.electionBody);
-    });
   }
 
   ngOnInit() {

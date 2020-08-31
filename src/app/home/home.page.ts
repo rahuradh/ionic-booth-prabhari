@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -16,17 +16,11 @@ export class HomePage implements OnInit {
   statusTabClass = 'tab-unselected';
   filterTabClass = 'tab-unselected';
   constructor(private actRouter: ActivatedRoute,
-    private navCtrl: NavController,
-    private platform: Platform) {
-
+    private navCtrl: NavController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
-
-    this.platform.backButton.subscribeWithPriority(10, () => {
-      this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
-    });
   }
 
   ngOnInit() {

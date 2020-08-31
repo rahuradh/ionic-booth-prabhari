@@ -22,8 +22,7 @@ export class CandidatePagePage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
-    private navCtrl: NavController,
-    private platform: Platform) {
+    private navCtrl: NavController) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
@@ -44,9 +43,6 @@ export class CandidatePagePage implements OnInit {
       this.hasAccess = true;
     }
     this.getCandidateList();
-    this.platform.backButton.subscribeWithPriority(10, () => {
-      this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
-    });
   }
 
   ngOnInit() {
@@ -97,13 +93,19 @@ export class CandidatePagePage implements OnInit {
   }
 
   openCandidateDetailPage(candidate) {
-    if (this.hasAccess) {
-      this.navCtrl.navigateRoot("candidate-detail/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + candidate.electionBody + "/" + candidate.id + "/" + 0);
+    if (candidate.candidateName != "Unpredictable") {
+      if (this.hasAccess) {
+        this.navCtrl.navigateRoot("candidate-detail/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + candidate.electionBody + "/" + candidate.id + "/" + 0);
+      }
     }
   }
 
-  deleteCandidateById(candidateId) {
-    this.firestore.doc("candidateList/" + candidateId).delete();
+  deleteCandidateById(candidateId: string, candidateName: string) {
+    if (candidateName == "Unpredictable") {
+      this.showToaster("Unpredictable candidate is mandatory, can't delete.");
+    } else {
+      this.firestore.doc("candidateList/" + candidateId).delete();
+    }
   }
   createNewCandidate() {
     this.navCtrl.navigateRoot("candidate-detail/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/" + this.electionBody + "/" + "empty" + "/" + this.candidateList.length);

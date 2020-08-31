@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from '../models/user.model';
-import { ToastController, LoadingController, NavController, Platform } from '@ionic/angular';
+import { ToastController, LoadingController, NavController, Platform, AlertController, IonRouterOutlet } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 
 @Component({
@@ -9,6 +10,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  @ViewChild(IonRouterOutlet, { static: false }) routerOutlet: IonRouterOutlet;
+
   user = {} as User;
   passwordEyeIcon: string = "eye";
   passwordType: string = "password";
@@ -17,9 +20,31 @@ export class LoginPage implements OnInit {
     private loadingCtrl: LoadingController,
     private firestore: AngularFirestore,
     private navCtrl: NavController,
-    private platform: Platform) {
-    this.platform.backButton.subscribe(() => {
-      navigator['app'].exitApp();
+    private platform: Platform,
+    private alertController: AlertController,
+    private router: Router) {
+
+    this.platform.backButton.subscribeWithPriority(0, async () => {
+      if (this.routerOutlet && this.routerOutlet.canGoBack()) {
+        this.routerOutlet.pop();
+      } else if (this.router.url === "/login") {
+        const alert = await this.alertController.create({
+          header: "Close App",
+          message: "Do you really want to close the app?",
+          buttons: [
+            {
+              text: "Cancel",
+              role: "cancel"
+            }, {
+              text: "Close App",
+              handler: () => {
+                navigator["app"].exitApp();
+              }
+            }
+          ]
+        });
+        await alert.present();
+      }
     });
   }
 

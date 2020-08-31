@@ -164,4 +164,7 @@ export class SearchPagePage implements OnInit {
       .then(res => console.log('Launched dialer!', res))
       .catch(err => console.log('Error launching dialer', err));
   }
+  goToDashboard() {
+    this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
+  }
 }

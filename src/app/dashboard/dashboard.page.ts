@@ -33,12 +33,8 @@ export class DashboardPage implements OnInit {
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private navCtrl: NavController,
-    private platform: Platform,
     private actRouter: ActivatedRoute) {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
-    this.platform.backButton.subscribe(() => {
-      this.navCtrl.navigateRoot("login/");
-    });
   }
 
   ngOnInit() {
