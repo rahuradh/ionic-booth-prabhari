@@ -1,6 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-searchbar placeholder="Eg:123" (ionInput)="filterList($event)">
+    <ion-searchbar class="ion-margin-top" placeholder="Eg:123" (ionInput)="filterList($event)"
+      [(ngModel)]="searchValue">
     </ion-searchbar>
   </ion-toolbar>
   <ion-toolbar>
@@ -13,6 +14,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content>
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-list lines="none">
     <ion-item-sliding *ngFor="let voter of lazyLoadingVotersList">
       <ion-item class="no-padding">
@@ -29,7 +34,8 @@
           <p style="font-weight: bold;">{{voter.voterId}}</p>
           <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
         </ion-label>
-        <ion-button slot="end" shape="round" href="tel:+91+voter.phoneNo" color="primary" *ngIf="!voter.isPhoneNoExist">
+        <ion-button slot="end" shape="round" (click)="callVoter(voter.phoneNo)" color="primary"
+          *ngIf="!voter.isPhoneNoExist">
           <ion-icon slot="icon-only" name="call"></ion-icon>
         </ion-button>
       </ion-item>

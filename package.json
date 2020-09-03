@@ -47,6 +47,7 @@
     "cordova-android": "^9.0.0",
     "cordova-plugin-androidx": "^2.0.0",
     "cordova-plugin-androidx-adapter": "^1.1.1",
+    "cordova-plugin-call-number": "^1.0.1",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-firebasex": "^10.2.0-cli",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
@@ -79,7 +80,8 @@
       "cordova-plugin-ionic-webview": {
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-call-number": {}
     },
     "platforms": [
       "android"

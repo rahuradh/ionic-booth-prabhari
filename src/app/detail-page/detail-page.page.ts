@@ -176,7 +176,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
     try {
       this.firestore.collection("candidateList", ref => ref.where('boothCode', '==', this.boothCode)).snapshotChanges().subscribe(data => {
         this.candidateList = data.map(candidate => {
-          let partyCode: string = String(candidate.payload.doc.data()['partyCode']) + '\xa0';
+          let partyCode: string = "[" + String(candidate.payload.doc.data()['partyCode']) + "]" + '\xa0';
           return {
             code: candidate.payload.doc.data()['candidateCode'],
             name: partyCode + String(candidate.payload.doc.data()['candidateName']),

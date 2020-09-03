@@ -24,10 +24,11 @@
     <ion-label class="label-class" position="floating">Access Type</ion-label>
     <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="user.accessType"
       (ionChange)="accessTypeComboOnChange($event)">
-      <ion-select-option value="Booth">Booth [Read/Write Access for all Booths]</ion-select-option>
-      <ion-select-option value="Ward">Ward [Read Access for all wards]</ion-select-option>
-      <ion-select-option value="LocalBody">Local Body [Read Access for all local bodies]</ion-select-option>
-      <ion-select-option value="Full">Full [Read/Write Access for all]</ion-select-option>
+      <ion-select-option value="Booth">Booth [Read/Write access for all Booths in a Ward]</ion-select-option>
+      <ion-select-option value="Ward">Ward [Read access for all wards in a local body]</ion-select-option>
+      <ion-select-option value="LocalBody">Local Body [Read access for all local bodies in a distict]
+      </ion-select-option>
+      <ion-select-option value="Full">Full [Read/Write access for all]</ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess||hasLocalBodyAccess||hasWardAccess"

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoadingController, ToastController, NavController, IonInfiniteScroll } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @Component({
@@ -15,6 +15,7 @@ export class SearchPagePage implements OnInit {
   public loadedVotersList: any[];
   public lazyLoadingVotersList: any[] = [];
   public recordCounter: number = 0;
+  public searchValue: string = "";
 
   boothCode: string;
   accessType: string;
@@ -27,7 +28,8 @@ export class SearchPagePage implements OnInit {
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private callNumber: CallNumber) {
+    private callNumber: CallNumber,
+    private router: Router) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
@@ -38,7 +40,11 @@ export class SearchPagePage implements OnInit {
     }
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.loadVotersList();
+  }
+
+  async loadVotersList() {
     let loader = await this.loadingCtrl.create({
       message: "Please wait...."
     });
@@ -166,5 +172,16 @@ export class SearchPagePage implements OnInit {
   }
   goToDashboard() {
     this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
+  }
+  doRefresh(event) {
+    setTimeout(() => {
+      this.votersList = [];
+      this.loadedVotersList = [];
+      this.lazyLoadingVotersList = [];
+      this.recordCounter = 0;
+      this.searchValue = "";
+      this.loadVotersList();
+      event.target.complete();
+    }, 200)
   }
 }
