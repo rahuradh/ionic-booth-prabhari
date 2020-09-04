@@ -142,30 +142,6 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.showToaster("Enter Voter Name.");
       return false;
     }
-    if (!this.voter.guardianName) {
-      this.showToaster("Enter Voter Guardian Name.");
-      return false;
-    }
-    if (!this.voter.houseNo) {
-      this.showToaster("Enter Voter House Number.");
-      return false;
-    }
-    if (!this.voter.address) {
-      this.showToaster("Enter Voter Address.");
-      return false;
-    }
-    if (!this.voter.gender) {
-      this.showToaster("Enter Voter Gender.");
-      return false;
-    }
-    if (!this.voter.age) {
-      this.showToaster("Enter Voter Age.");
-      return false;
-    }
-    if (!this.voter.idCardNo) {
-      this.showToaster("Enter Voter Id Card Number.");
-      return false;
-    }
     return true;
   }
   async loadCandidateCombo() {

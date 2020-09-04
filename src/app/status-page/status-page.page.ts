@@ -456,6 +456,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (panchayatCandidateList.length == 0 || panchayatCandidateList.length == 1) {
+      this.panchayantPrePollResultMsg = 'No result found.';
       return;
     }
     let panchayatCandidateListWithPrePollResult = panchayatCandidateList.sort((n1, n2) => {
@@ -478,6 +479,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (panchayatCandidateList.length == 0 || panchayatCandidateList.length == 1) {
+      this.panchayantExitPollResultMsg = 'No result found.';
       return;
     }
     let panchayatCandidateListWithExitPollResult = panchayatCandidateList.sort((n1, n2) => {
@@ -501,6 +503,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (blockPanchayatCandidateList.length == 0 || blockPanchayatCandidateList.length == 1) {
+      this.blockPanchayantPrePollResultMsg = 'No result found.';
       return;
     }
     let blockPanchayatCandidateListWithPrePollResult = blockPanchayatCandidateList.sort((n1, n2) => {
@@ -523,6 +526,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (blockPanchayatCandidateList.length == 0 || blockPanchayatCandidateList.length == 1) {
+      this.blockPanchayantExitPollResultMsg = 'No result found.';
       return;
     }
     let blockPanchayatCandidateListWithExitPollResult = blockPanchayatCandidateList.sort((n1, n2) => {
@@ -545,6 +549,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (districtPanchayatCandidateList.length == 0 || districtPanchayatCandidateList.length == 1) {
+      this.districtPanchayantPrePollResultMsg = 'No result found.';
       return;
     }
     let districtPanchayatCandidateListWithPrePollResult = districtPanchayatCandidateList.sort((n1, n2) => {
@@ -567,6 +572,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       }
     });
     if (districtPanchayatCandidateList.length == 0 || districtPanchayatCandidateList.length == 1) {
+      this.districtPanchayantExitPollResultMsg = 'No result found.';
       return;
     }
     let districtPanchayatCandidateListWithExitPollResult = districtPanchayatCandidateList.sort((n1, n2) => {

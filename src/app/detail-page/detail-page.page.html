@@ -42,19 +42,19 @@
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Guardian Name</ion-label>
-    <ion-input type="text" required [(ngModel)]="voter.guardianName" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="text" [(ngModel)]="voter.guardianName" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">House No</ion-label>
-    <ion-input type="text" required [(ngModel)]="voter.houseNo" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="text" [(ngModel)]="voter.houseNo" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Address</ion-label>
-    <ion-input type="text" required [(ngModel)]="voter.address" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="text" [(ngModel)]="voter.address" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item [disabled]="readOnlyMode" class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Gender</ion-label>
-    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="voter.gender">
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.gender">
       <ion-select-option value="Male">Male</ion-select-option>
       <ion-select-option value="Female">Female</ion-select-option>
       <ion-select-option value="Trans">Trans</ion-select-option>
@@ -62,11 +62,11 @@
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Age</ion-label>
-    <ion-input type="number" required [(ngModel)]="voter.age" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="number" [(ngModel)]="voter.age" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Id Card No</ion-label>
-    <ion-input type="text" required [(ngModel)]="voter.idCardNo" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="text" [(ngModel)]="voter.idCardNo" [readonly]="readOnlyMode"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Phone No</ion-label>
