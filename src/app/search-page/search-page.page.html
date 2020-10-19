@@ -1,15 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-searchbar class="ion-margin-top" placeholder="Eg:123" (ionInput)="filterList($event)"
+    <ion-searchbar class="ion-margin-top ion-margin-bottom" placeholder="Eg:123" (ionInput)="filterList($event)"
       [(ngModel)]="searchValue">
     </ion-searchbar>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="goToDashboard()" color="dark">
-        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

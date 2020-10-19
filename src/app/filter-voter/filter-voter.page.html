@@ -1,6 +1,6 @@
 <ion-header [translucent]="false">
   <ion-toolbar>
-    <ion-item class="ion-margin-top">
+    <ion-item class="ion-margin-top ion-margin-bottom">
       <ion-label style="font-weight: bold;">Add Search Condition :</ion-label>
       <ion-select [(ngModel)]="selectedValues" multiple="true" (ionChange)="searchComboOnChange($event)">
         <ion-select-option value="religion">Religion</ion-select-option>
@@ -13,13 +13,6 @@
         <ion-select-option value="ageRange">Age</ion-select-option>
       </ion-select>
     </ion-item>
-  </ion-toolbar>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="goToDashboard()" color="dark">
-        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>

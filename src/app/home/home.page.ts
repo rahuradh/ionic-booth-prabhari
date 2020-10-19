@@ -15,6 +15,7 @@ export class HomePage implements OnInit {
   searchTabClass = 'tab-selected';
   statusTabClass = 'tab-unselected';
   filterTabClass = 'tab-unselected';
+  backTabClass = 'tab-unselected';
   constructor(private actRouter: ActivatedRoute,
     private navCtrl: NavController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
@@ -63,5 +64,9 @@ export class HomePage implements OnInit {
     this.searchTabClass = 'tab-unselected';
     this.statusTabClass = 'tab-unselected';
     this.filterTabClass = 'tab-selected';
+  }
+
+  goToDashboard() {
+    this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
   }
 }
