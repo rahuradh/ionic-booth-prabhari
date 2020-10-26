@@ -24,6 +24,14 @@
         <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="dark" (click)="callVoter(voter.phoneNo)" *ngIf="isPhoneNumberExist">
+        <ion-icon slot="icon-only" name="call-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="dark" (click)="goToMessageSender(voter)">
+        <ion-icon slot="icon-only" name="chatbubbles-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end" *ngIf="hasAccess">
       <ion-button shape="round" (click)="upateVoter()" color="dark" *ngIf="!readOnlyMode">
         <ion-icon slot="icon-only" name="save"></ion-icon>
@@ -70,7 +78,8 @@
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Phone No</ion-label>
-    <ion-input type="tel" [(ngModel)]="voter.phoneNo" [readonly]="readOnlyMode"></ion-input>
+    <ion-input type="tel" [(ngModel)]="voter.phoneNo" [readonly]="readOnlyMode"
+      (ionChange)="checkPhoneNumber(voter.phoneNo)"></ion-input>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class">Dead</ion-label>
@@ -98,7 +107,7 @@
     </ion-select>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
-    <ion-label class="label-class" position="floating">Panchayat Vote :</ion-label>
+    <ion-label class="label-class" position="floating">Panchayat Vote For:</ion-label>
     <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.panchayatVote"
       [disabled]="readOnlyMode">
       <ion-select-option *ngFor="let candidate of panchayatCandidateList" [value]="candidate.code">

@@ -61,6 +61,10 @@ const routes: Routes = [
   {
     path: 'candidate-detail/:boothCode/:accessType/:phoneNo/:callFrom/:electionBody/:candidateId/:candidatesCount',
     loadChildren: () => import('./candidate-detail/candidate-detail.module').then(m => m.CandidateDetailPageModule)
+  },
+  {
+    path: 'message-sender/:boothCode/:serialNo/:accessType/:phoneNo/:callFrom',
+    loadChildren: () => import('./message-sender/message-sender.module').then(m => m.MessageSenderPageModule)
   }
 ];
 

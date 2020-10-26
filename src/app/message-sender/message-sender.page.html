@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-title color="warning">
+      <ion-text class="ion-text-center">
+        <h1 style="font-weight: bold;">Message Sender</h1>
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-text class="ion-text-center">
+      <h4 style="font-weight: bold;">{{voter.serialNo}}</h4>
+    </ion-text>
+    <ion-text class="ion-text-center" [color]="voterNameColor">
+      <h4 style="font-weight: bold;">{{voter.voterName}}</h4>
+    </ion-text>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToPrevious()" [disabled]="!readOnlyMode">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="goToNext()" [disabled]="!readOnlyMode">
+        <ion-icon slot="icon-only" name="arrow-forward"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToDetailPage(voter)" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end" *ngIf="isPhoneNumberExist">
+      <ion-button color="dark" (click)="sendSms()">
+        <ion-icon slot="icon-only" name="chatbubble-ellipses-outline"></ion-icon>
+      </ion-button>
+      <ion-button color="dark" (click)="sendWhatsAppMessage()">
+        <ion-icon slot="icon-only" name="logo-whatsapp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Phone No</ion-label>
+    <ion-input type="tel" required [(ngModel)]="voter.phoneNo" (ionChange)="checkPhoneNumber(voter.phoneNo)">
+    </ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Panchayat Vote For:</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.panchayatVote"
+      [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of panchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Block Vote For :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.blockVote" [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of blockPanchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">District Vote For :</ion-label>
+    <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="voter.districtVote"
+      [disabled]="readOnlyMode">
+      <ion-select-option *ngFor="let candidate of districtPanchayatCandidateList" [value]="candidate.code">
+        {{candidate.name | uppercase}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Salutation</ion-label>
+    <ion-input type="text" placeholder="Eg: നമസ്കാരം (optional)" [(ngModel)]="salutation"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class">Use Salutation</ion-label>
+    <ion-toggle color="primary" color="success" [(ngModel)]="isSalutationRequired"></ion-toggle>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Message Content</ion-label>
+    <ion-textarea rows="13" cols="20" type="text" placeholder="Enter your content here..." required
+      [(ngModel)]="messageContent"></ion-textarea>
+  </ion-item>
+</ion-content>

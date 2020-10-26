@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoadingController, ToastController, NavController, IonInfiniteScroll } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 
 @Component({
@@ -28,8 +28,7 @@ export class SearchPagePage implements OnInit {
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private callNumber: CallNumber,
-    private router: Router) {
+    private callNumber: CallNumber) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");

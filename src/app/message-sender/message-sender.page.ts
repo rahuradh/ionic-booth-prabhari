@@ -1,29 +1,33 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Voter } from '../models/voter.model';
-import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ToastController, NavController } from '@ionic/angular';
+import { ThrowStmt } from '@angular/compiler';
+import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { CallNumber } from '@ionic-native/call-number/ngx';
+import { ActivatedRoute } from '@angular/router';
+import { SMS, SmsOptions } from '@ionic-native/sms/ngx';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { Voter } from '../models/voter.model';
 
 @Component({
-  selector: 'app-detail-page',
-  templateUrl: './detail-page.page.html',
-  styleUrls: ['./detail-page.page.scss'],
+  selector: 'app-message-sender',
+  templateUrl: './message-sender.page.html',
+  styleUrls: ['./message-sender.page.scss'],
 })
-export class DetailPagePage implements OnInit, AfterViewInit {
+export class MessageSenderPage implements OnInit {
+
+  salutation: string = "";
+  messageContent: string;
+
   voter = {} as Voter;
   boothCode: string;
   serialNo: string;
   accessType: string;
   phoneNo: string;
   callFrom: string;
-  hasAccess: boolean = false;
   isPhoneNumberExist: boolean = false;
+  isSalutationRequired: boolean = true;
+
 
   id: string;
   readOnlyMode: boolean = true;
-  religionList: any;
-  casteList: any;
   candidateList: any;
   panchayatCandidateList: any;
   blockPanchayatCandidateList: any;
@@ -34,21 +38,17 @@ export class DetailPagePage implements OnInit, AfterViewInit {
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private callNumber: CallNumber) {
+    private sms: SMS) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.serialNo = this.actRouter.snapshot.paramMap.get("serialNo");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
-    if (this.accessType == "Full" || this.accessType == "Booth") {
-      this.hasAccess = true;
-    }
   }
 
   ngOnInit() {
   }
   ngAfterViewInit() {
-    this.loadReligionCombo();
     this.loadCandidateCombo();
     this.getVoter(this.serialNo);
   }
@@ -62,8 +62,11 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.firestore.collection("votersList", ref => ref.where('boothCode', '==', this.boothCode).where('serialNo', '==', Number(serialNo))).snapshotChanges().subscribe(data => {
         data.map(voter => {
           this.id = voter.payload.doc.id;
-          this.serialNo = String(voter.payload.doc.data()['serialNo'])
+          this.serialNo = String(voter.payload.doc.data()['serialNo']);
+          let voterName = String(voter.payload.doc.data()['voterName']);
+          this.salutation = "നമസ്കാരം " + voterName + " ജി,";
           this.checkPhoneNumber(String(voter.payload.doc.data()['phoneNo']));
+
           this.voter = {
             boothCode: String(voter.payload.doc.data()['boothCode']),
             serialNo: Number(voter.payload.doc.data()['serialNo']),
@@ -90,7 +93,6 @@ export class DetailPagePage implements OnInit, AfterViewInit {
         } else {
           this.voterNameColor = "";
         }
-        this.loadCasteCombo(this.voter.religion);
       });
     } catch (err) {
       this.showToaster(err);
@@ -121,37 +123,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
     }
   }
-  editVoter() {
-    this.readOnlyMode = false;
-  }
 
-  async upateVoter() {
-    if (this.formValidation()) {
-      let loader = await this.loadingCtrl.create({
-        message: "Please wait...."
-      });
-      loader.present();
-      try {
-        await this.firestore.doc("votersList/" + this.id).update(this.voter);
-        this.readOnlyMode = true;
-      } catch (err) {
-        this.showToaster(err);
-      }
-      loader.dismiss();
-    }
-  }
-
-  formValidation() {
-    if (!this.voter.voterName) {
-      this.showToaster("Enter Voter Name.");
-      return false;
-    }
-    if (this.voter.phoneNo && this.voter.phoneNo.length != 10) {
-      this.showToaster("Enter valid Phone Number with out 91.");
-      return false;
-    }
-    return true;
-  }
   async loadCandidateCombo() {
     let loader = await this.loadingCtrl.create({
       message: "Please wait...."
@@ -198,76 +170,55 @@ export class DetailPagePage implements OnInit, AfterViewInit {
     loader.dismiss();
   }
 
-  async loadReligionCombo() {
-    let loader = await this.loadingCtrl.create({
-      message: "Please wait...."
-    });
-    loader.present();
-    try {
-      this.firestore.collection("religionList", ref => ref.orderBy("religionCode")).snapshotChanges().subscribe(data => {
-        this.religionList = data.map(voter => {
-          return {
-            code: voter.payload.doc.data()['religionCode'],
-            name: voter.payload.doc.data()['religionName'],
-          }
-        });
+  goToDetailPage(voter) {
+    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+  }
+
+  sendSms() {
+    if (this.formValidation()) {
+      var options: SmsOptions = {
+        replaceLineBreaks: true,
+        android: {
+          intent: 'INTENT'
+        }
+      }
+      var smsContent: string = "";
+      if (this.salutation != undefined && this.salutation != '' && this.isSalutationRequired) {
+        smsContent = this.salutation + "\n\n" + this.messageContent;
+      } else {
+        smsContent = this.messageContent;
+      }
+      this.sms.send('91' + this.voter.phoneNo, smsContent, options).then((data) => {
+        this.showToaster("Opening Messaging App");
+      }, (err) => {
+        this.showToaster("SMS Sending Failed : " + err);
       });
-    } catch (err) {
-      this.showToaster(err);
-    }
-    loader.dismiss();
-  }
-
-  async loadCasteCombo(religionCode: string) {
-    if (!religionCode) {
-      return;
-    }
-    let loader = await this.loadingCtrl.create({
-      message: "Please wait...."
-    });
-    loader.present();
-    try {
-      this.firestore.collection("casteList", ref => ref.where('religionCode', '==', religionCode)).snapshotChanges().subscribe(data => {
-        this.casteList = data.map(voter => {
-          return {
-            code: voter.payload.doc.data()['casteCode'],
-            name: voter.payload.doc.data()['casteName'],
-          }
-        });
-        this.casteList = this.casteList.sort((n1, n2) => {
-          if (Number(n1.code) > Number(n2.code)) {
-            return 1;
-          }
-          if (Number(n1.code) < Number(n2.code)) {
-            return -1;
-          }
-          return 0;
-        });
-      });
-    } catch (err) {
-      this.showToaster(err);
-    }
-    loader.dismiss();
-  }
-
-  religionComboOnChange(event) {
-    this.loadCasteCombo(this.voter.religion);
-  }
-
-  onDeadToggleChange(isDead: boolean) {
-    if (isDead) {
-      this.voter.outOfStation = false;
     }
   }
-
-  goToMessageSender(voter) {
-    this.navCtrl.navigateRoot("message-sender/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/DetailPage");
+  sendWhatsAppMessage() {
+    if (this.formValidation()) {
+      var whatsAppMsgContent: string = "";
+      if (this.salutation != undefined && this.salutation != '' && this.isSalutationRequired) {
+        whatsAppMsgContent = this.salutation + "\n\n" + this.messageContent;
+      } else {
+        whatsAppMsgContent = this.messageContent;
+      }
+      const urlContent = window.encodeURIComponent(whatsAppMsgContent);
+      console.log(urlContent);
+      const url: string = "http://wa.me/" + '91' + this.voter.phoneNo + "?text=" + urlContent;
+      window.location.href = url;
+    }
   }
-
-  callVoter(phoneNo: string) {
-    this.callNumber.callNumber(phoneNo, true)
-      .then(res => console.log('Launched dialer!', res))
-      .catch(err => console.log('Error launching dialer', err));
+  formValidation() {
+    if (!this.voter.phoneNo || this.voter.phoneNo.length != 10) {
+      this.showToaster("Enter valid Phone Number with out 91.");
+      return false;
+    }
+    if (!this.messageContent) {
+      this.showToaster("Enter Message Content.");
+      return false;
+    }
+    return true;
   }
 
   checkPhoneNumber(phoneNo: string) {
@@ -277,4 +228,5 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.isPhoneNumberExist = true;
     }
   }
+
 }

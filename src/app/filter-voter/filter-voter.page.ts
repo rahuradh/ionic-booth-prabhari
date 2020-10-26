@@ -11,7 +11,7 @@ import { CallNumber } from '@ionic-native/call-number/ngx';
 })
 export class FilterVoterPage implements OnInit {
   selectedValues: string[] = [];
-  religionList: any;
+  religionList: any[];
   casteList: any;
   recordCount: number = 0;
 
@@ -27,6 +27,7 @@ export class FilterVoterPage implements OnInit {
   showIsOOSField: boolean = false;
   showRecordCount: boolean = false;
   showAgeRangeField: boolean = false;
+  showPhoneNoField: boolean = false;
 
   religionCode: string;
   casteCode: string;
@@ -40,6 +41,7 @@ export class FilterVoterPage implements OnInit {
     upper: 100,
     lower: 18
   }
+  phoneNumber: number;
 
   boothCode: string;
   accessType: string;
@@ -80,6 +82,10 @@ export class FilterVoterPage implements OnInit {
             name: religion.payload.doc.data()['religionName'],
           }
         });
+        this.religionList.push({
+          code: '8080',
+          name: '[Empty Check]',
+        });
       });
     } catch (err) {
       this.showToaster(err);
@@ -101,6 +107,10 @@ export class FilterVoterPage implements OnInit {
             name: caste.payload.doc.data()['casteName'],
           }
         });
+        this.casteList.push({
+          code: '8080',
+          name: '[Empty Check]',
+        });
         this.casteList = this.casteList.sort((n1, n2) => {
           if (Number(n1.code) > Number(n2.code)) {
             return 1;
@@ -118,6 +128,8 @@ export class FilterVoterPage implements OnInit {
   }
 
   religionComboOnChange(event) {
+    this.casteList = [];
+    this.casteCode = "";
     this.loadCasteCombo(this.religionCode);
   }
 
@@ -140,6 +152,7 @@ export class FilterVoterPage implements OnInit {
     this.showIsOOSField = false;
     this.showRecordCount = false;
     this.showAgeRangeField = false;
+    this.showPhoneNoField = false;
 
     this.votersList = null;
     this.lazyLoadingVotersList = null;
@@ -180,6 +193,10 @@ export class FilterVoterPage implements OnInit {
         this.showAgeRangeField = true;
         this.showSearchButton = true;
       }
+      if (searchCondition == "phoneNo") {
+        this.showPhoneNoField = true;
+        this.showSearchButton = true;
+      }
     });
   }
 
@@ -207,16 +224,19 @@ export class FilterVoterPage implements OnInit {
 
   addFilter() {
     if (this.selectedValues.includes("religion")) {
+      const religionCodeValue = this.religionCode == '8080' ? '' : this.religionCode;
       this.votersList = this.votersList.filter(currentVoter => {
-        if (currentVoter.religion.toLowerCase() == this.religionCode.toLowerCase()) {
+        if (currentVoter.religion.toLowerCase() == religionCodeValue.toLowerCase()) {
           return true;
         }
       });
     }
     if (this.selectedValues.includes("caste")) {
+      const religionCodeValue = this.religionCode == '8080' ? '' : this.religionCode;
+      const casteCodeValue = this.casteCode == '8080' ? '' : this.casteCode;
       this.votersList = this.votersList.filter(currentVoter => {
-        if (currentVoter.religion.toLowerCase() == this.religionCode.toLowerCase() &&
-          currentVoter.caste.toLowerCase() == this.casteCode.toLowerCase()) {
+        if (currentVoter.religion.toLowerCase() == religionCodeValue.toLowerCase() &&
+          currentVoter.caste.toLowerCase() == casteCodeValue.toLowerCase()) {
           return true;
         }
       });
@@ -229,23 +249,24 @@ export class FilterVoterPage implements OnInit {
       });
     }
     if (this.selectedValues.includes("candidate")) {
+      const candidateCodeValue = this.candidateCode == '8080' ? '' : this.candidateCode;
       if (this.electionBodyCode == "panchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
-          if (currentVoter.panchayatVote == this.candidateCode) {
+          if (currentVoter.panchayatVote == candidateCodeValue) {
             return true;
           }
         });
       }
       if (this.electionBodyCode == "blockPanchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
-          if (currentVoter.blockPanchayatVote == this.candidateCode) {
+          if (currentVoter.blockPanchayatVote == candidateCodeValue) {
             return true;
           }
         });
       }
       if (this.electionBodyCode == "districtPanchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
-          if (currentVoter.districtPanchayatVote == this.candidateCode) {
+          if (currentVoter.districtPanchayatVote == candidateCodeValue) {
             return true;
           }
         });
@@ -276,6 +297,21 @@ export class FilterVoterPage implements OnInit {
       this.votersList = this.votersList.filter(currentVoter => {
         if (currentVoter.age >= this.ageRange.lower && currentVoter.age <= this.ageRange.upper) {
           return true;
+        }
+      });
+    }
+    if (this.selectedValues.includes("phoneNo")) {
+      const phoneNumberValue: string = this.phoneNumber == undefined ? '' : String(this.phoneNumber);
+      this.votersList = this.votersList.filter(currentVoter => {
+        console.log("A" + currentVoter.phoneNo + "A");
+        if (phoneNumberValue == '') {
+          if (currentVoter.phoneNo == phoneNumberValue) {
+            return true;
+          }
+        } else {
+          if (currentVoter.phoneNo.indexOf(phoneNumberValue) > -1) {
+            return true;
+          }
         }
       });
     }
@@ -318,13 +354,15 @@ export class FilterVoterPage implements OnInit {
         panchayatVote: Number(voter.payload.doc.data()['panchayatVote']),
         blockPanchayatVote: Number(voter.payload.doc.data()['blockVote']),
         districtPanchayatVote: Number(voter.payload.doc.data()['districtVote']),
-        phoneNo: voter.payload.doc.data()['phoneNo'],
+        phoneNo: String(voter.payload.doc.data()['phoneNo']),
         isPhoneNoExist: voter.payload.doc.data()['phoneNo'] == "" ? true : false
       }
     });
     this.addFilter();
   }
   electionBodyComboOnChange(event) {
+    this.candidateList = [];
+    this.candidateCode = "";
     this.loadCandidateCombo();
   }
   async loadCandidateCombo() {
@@ -335,11 +373,15 @@ export class FilterVoterPage implements OnInit {
     try {
       this.firestore.collection("candidateList", ref => ref.where('boothCode', '==', this.boothCode).where('electionBody', '==', this.electionBodyCode)).snapshotChanges().subscribe(data => {
         this.candidateList = data.map(candidate => {
-          let partyCode: string = String(candidate.payload.doc.data()['partyCode']) + '\xa0';
+          let partyCode: string = '[' + String(candidate.payload.doc.data()['partyCode']) + ']' + '\xa0';
           return {
             code: candidate.payload.doc.data()['candidateCode'],
             name: partyCode + String(candidate.payload.doc.data()['candidateName']),
           }
+        });
+        this.candidateList.push({
+          code: '8080',
+          name: '[Empty Check]',
         });
         this.candidateList = this.candidateList.sort((n1, n2) => {
           if (Number(n1.code) > Number(n2.code)) {

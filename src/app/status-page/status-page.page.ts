@@ -51,6 +51,8 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   private prePollVotersForCandidateList: any[] = [];
   private exitPollVotersForCandidateList: any[] = [];
 
+  private hasMessagingAccess: boolean = false;
+
   constructor(private actRouter: ActivatedRoute,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
@@ -61,6 +63,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+    if (this.accessType == "Full") {
+      this.hasMessagingAccess = true;
+    }
     this.getBoothDetailStatus();
   }
 
@@ -661,4 +666,5 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     });
     return await popover.present();
   }
+
 }
