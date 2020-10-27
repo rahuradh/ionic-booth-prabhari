@@ -210,8 +210,8 @@ export class MessageSenderPage implements OnInit {
     }
   }
   formValidation() {
-    if (!this.voter.phoneNo || this.voter.phoneNo.length != 10) {
-      this.showToaster("Enter valid Phone Number with out 91.");
+    if (!this.voter.phoneNo || this.voter.phoneNo.length < 10) {
+      this.showToaster("Enter valid Phone Number with out 91.>");
       return false;
     }
     if (!this.messageContent) {

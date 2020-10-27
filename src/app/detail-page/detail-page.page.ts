@@ -146,7 +146,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.showToaster("Enter Voter Name.");
       return false;
     }
-    if (this.voter.phoneNo && this.voter.phoneNo.length != 10) {
+    if (this.voter.phoneNo && this.voter.phoneNo.length < 10) {
       this.showToaster("Enter valid Phone Number with out 91.");
       return false;
     }

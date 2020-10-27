@@ -71,7 +71,6 @@ export class CandidateDetailPage implements OnInit {
     loader.present();
     try {
       this.firestore.collection("candidateList").doc(this.candidateId).get().subscribe(candidate => {
-        console.log(candidate.data());
         this.candidate = {
           boothCode: String(candidate.data()['boothCode']),
           candidateName: String(candidate.data()['candidateName']),

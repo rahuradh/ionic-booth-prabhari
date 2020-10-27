@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit {
+  hasAccess: boolean = false;
   stateCode: string = "32";
   districtCode: string;
   localBodyCode: string;
@@ -35,6 +36,7 @@ export class DashboardPage implements OnInit {
     private navCtrl: NavController,
     private actRouter: ActivatedRoute) {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.checkAccess(this.phoneNo);
   }
 
   ngOnInit() {
@@ -218,14 +220,14 @@ export class DashboardPage implements OnInit {
       this.boothList = [];
       this.pollingStationList = [];
       this.paymentDoneboothList = [];
-      this.isAdminApproved = false;
-      this.accessType = "";
-      this.accessCode = "";
-      this.checkAccess(this.pollingStationCode, this.phoneNo);
+      this.validateAccess();
     }
   }
 
-  async checkAccess(boothCode: string, phoneNo: string) {
+  async checkAccess(phoneNo: string) {
+    this.isAdminApproved = false;
+    this.accessType = "";
+    this.accessCode = "";
     let loader = await this.loadingCtrl.create({
       message: "Please wait...."
     });
@@ -238,7 +240,9 @@ export class DashboardPage implements OnInit {
           this.accessType = String(user.payload.doc.data()['accessType']);
           this.accessCode = String(user.payload.doc.data()['accessCode']);
         });
-        this.validateAccess();
+        if (this.accessType == "Full" && this.isAdminApproved) {
+          this.hasAccess = true;
+        }
       });
     } catch (err) {
       this.showToaster(err);
@@ -246,7 +250,7 @@ export class DashboardPage implements OnInit {
     loader.dismiss();
   }
 
-  validateAccess() {
+  validateAccess(): void {
     if (this.isAdminApproved) {
       if (this.accessType == "Full") {
         this.navCtrl.navigateRoot("home/" + this.pollingStationCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
@@ -317,5 +321,8 @@ export class DashboardPage implements OnInit {
     } else {
       this.navCtrl.navigateRoot("access-page/" + false + "/" + false + "/" + this.phoneNo);
     }
+  }
+  goToAccessManager(): void {
+    this.navCtrl.navigateRoot("access-manager/" + this.phoneNo);
   }
 }

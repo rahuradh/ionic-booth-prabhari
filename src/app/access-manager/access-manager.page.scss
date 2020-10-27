@@ -1,0 +1,12 @@
+.vertical-align-content > * {
+    transform: translateY(-50%);
+    top: 50%;
+    // position: absolute;
+}
+.label-class {
+    font-weight: bold;
+    color: rgba($color: #3498db, $alpha: 1);
+}
+.login-card {
+    background: #0073b1;
+}

@@ -1,16 +1,11 @@
 <ion-header>
   <ion-toolbar class="ion-text-center">
-    <ion-title>Choose Your Booth</ion-title>
+    <ion-title>Access Manager</ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button [routerLink]="['/login']" color="dark">
+      <ion-button (click)="goToDashboard()" color="dark">
         <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end" *ngIf="hasAccess">
-      <ion-button color="dark" (click)="goToAccessManager()">
-        <ion-icon slot="icon-only" name="people"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -19,6 +14,18 @@
 <ion-content class="vertical-align-content">
   <ion-card class="login-card">
     <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+      <ion-label class="label-class" position="floating">Access Type</ion-label>
+      <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="accessType"
+        (ionChange)="accessTypeComboOnChange($event)">
+        <ion-select-option value="Booth">Booth [Read/Write access for all booths in a ward]</ion-select-option>
+        <ion-select-option value="Ward">Ward [Read access for all wards in a local body]</ion-select-option>
+        <ion-select-option value="LocalBody">Local Body [Read access for all local bodies in a distict]
+        </ion-select-option>
+        <ion-select-option value="Full">Full [Read/Write access for all]</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess||hasLocalBodyAccess||hasWardAccess"
+      lines="none">
       <ion-label class="label-class">District</ion-label>
       <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="districtCode"
         (ionChange)="districtComboOnChange($event)" required>
@@ -27,7 +34,7 @@
         </ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess||hasWardAccess" lines="none">
       <ion-label class="label-class">Local Body</ion-label>
       <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="localBodyCode"
         (ionChange)="localBodyComboOnChange($event)" required>
@@ -36,22 +43,15 @@
         </ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
+    <ion-item class="ion-margin-top ion-margin-bottom" *ngIf="hasBoothAccess" lines="none">
       <ion-label class="label-class">Ward</ion-label>
-      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="wardCode"
-        (ionChange)="wardComboOnChange($event)" required>
+      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="wardCode" required>
         <ion-select-option *ngFor="let ward of wardList" [value]="ward.code">{{ward.name | uppercase}}
         </ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item class="ion-margin-top ion-margin-bottom" lines="none">
-      <ion-label class="label-class">Polling Station</ion-label>
-      <ion-select interface="action-sheet" class="custom-options" [(ngModel)]="pollingStationCode" required>
-        <ion-select-option *ngFor="let ps of pollingStationList" [value]="ps.code">{{ps.name | uppercase}}
-        </ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-button color="dark" class="ion-margin-top ion-margin-bottom" expand="full" size="medium" (click)="goToHome()">
+    <ion-button color="dark" class="ion-margin-top ion-margin-bottom" expand="full" size="medium"
+      (click)="goToAppUser()">
       <ion-icon slot="icon-only" name="arrow-forward-circle"></ion-icon>
     </ion-button>
   </ion-card>

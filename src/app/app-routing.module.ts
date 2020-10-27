@@ -65,6 +65,18 @@ const routes: Routes = [
   {
     path: 'message-sender/:boothCode/:serialNo/:accessType/:phoneNo/:callFrom',
     loadChildren: () => import('./message-sender/message-sender.module').then(m => m.MessageSenderPageModule)
+  },
+  {
+    path: 'access-manager/:phoneNo',
+    loadChildren: () => import('./access-manager/access-manager.module').then(m => m.AccessManagerPageModule)
+  },
+  {
+    path: 'app-users-page/:phoneNo/:accessType/:accessCode',
+    loadChildren: () => import('./app-users-page/app-users-page.module').then(m => m.AppUsersPagePageModule)
+  },
+  {
+    path: 'app-user-detail-page/:phoneNo/:accessType/:accessCode/:userId',
+    loadChildren: () => import('./app-user-detail-page/app-user-detail-page.module').then(m => m.AppUserDetailPagePageModule)
   }
 ];
 
