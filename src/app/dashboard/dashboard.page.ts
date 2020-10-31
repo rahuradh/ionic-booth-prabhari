@@ -38,6 +38,13 @@ export class DashboardPage implements OnInit {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.checkAccess(this.phoneNo);
   }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
+  }
 
   ngOnInit() {
     this.loadDistrictCombo();
@@ -324,5 +331,8 @@ export class DashboardPage implements OnInit {
   }
   goToAccessManager(): void {
     this.navCtrl.navigateRoot("access-manager/" + this.phoneNo);
+  }
+  goToPasswordChangnePage(): void {
+    this.navCtrl.navigateRoot("change-password-page/" + this.phoneNo);
   }
 }

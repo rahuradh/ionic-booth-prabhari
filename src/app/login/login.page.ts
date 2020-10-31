@@ -48,8 +48,17 @@ export class LoginPage implements OnInit {
     });
   }
 
+  successCallback(result) {
+    this.showToaster(result);
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
+  }
+
   ngOnInit() {
   }
+
   async login(user: User) {
     if (this.formValidation()) {
       let loader = this.loadingCtrl.create({

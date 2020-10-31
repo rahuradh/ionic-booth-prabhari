@@ -8,9 +8,14 @@
         <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="dark" (click)="goToPasswordChangnePage()">
+        <ion-icon slot="icon-only" name="lock-open-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end" *ngIf="hasAccess">
       <ion-button color="dark" (click)="goToAccessManager()">
-        <ion-icon slot="icon-only" name="people"></ion-icon>
+        <ion-icon slot="icon-only" name="people-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

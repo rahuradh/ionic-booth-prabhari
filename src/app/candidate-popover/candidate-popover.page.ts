@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, NavController, PopoverController } from '@ionic/angular';
+import { NavParams, NavController, PopoverController, ToastController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-candidate-popover',
@@ -27,11 +27,19 @@ export class CandidatePopoverPage implements OnInit {
   ]
   constructor(private navParams: NavParams,
     private navCtrl: NavController,
-    private popoverController: PopoverController) {
+    private popoverController: PopoverController,
+    private toastCtrl: ToastController) {
     this.boothCode = this.navParams.get('boothCode');
     this.accessType = this.navParams.get('accessType');
     this.phoneNo = this.navParams.get('phoneNo');
     this.callFrom = this.navParams.get('callFrom');
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() {
@@ -46,5 +54,11 @@ export class CandidatePopoverPage implements OnInit {
       this.navCtrl.navigateRoot("candidate-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/" + this.callFrom + "/districtPanchayat");
     }
     this.popoverController.dismiss();
+  }
+  showToaster(message: string) {
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    }).then(toastData => toastData.present());
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, ToastController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -17,11 +17,19 @@ export class HomePage implements OnInit {
   filterTabClass = 'tab-unselected';
   backTabClass = 'tab-unselected';
   constructor(private actRouter: ActivatedRoute,
-    private navCtrl: NavController) {
+    private navCtrl: NavController,
+    private toastCtrl: ToastController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() {
@@ -68,5 +76,12 @@ export class HomePage implements OnInit {
 
   goToDashboard() {
     this.navCtrl.navigateRoot("dashboard/" + this.phoneNo);
+  }
+
+  showToaster(message: string) {
+    this.toastCtrl.create({
+      message: message,
+      duration: 3000
+    }).then(toastData => toastData.present());
   }
 }

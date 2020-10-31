@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Voter } from '../models/voter.model';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, ToastController, NavController } from '@ionic/angular';
+import { LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 
@@ -44,7 +44,13 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.hasAccess = true;
     }
   }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
 
+  errorCallback(error) {
+    this.showToaster(error);
+  }
   ngOnInit() {
   }
   ngAfterViewInit() {

@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { CallNumber } from '@ionic-native/call-number/ngx';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { User } from '../models/user.model';
 
 @Component({
@@ -27,6 +27,13 @@ export class AppUsersPagePage implements OnInit {
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.accessCode = this.actRouter.snapshot.paramMap.get("accessCode");
     this.loadUserList();
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() {

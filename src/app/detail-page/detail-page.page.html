@@ -24,8 +24,8 @@
         <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button color="dark" (click)="callVoter(voter.phoneNo)" *ngIf="isPhoneNumberExist">
+    <ion-buttons slot="end" *ngIf="isPhoneNumberExist">
+      <ion-button color="dark" (click)="callVoter(voter.phoneNo)">
         <ion-icon slot="icon-only" name="call-outline"></ion-icon>
       </ion-button>
       <ion-button color="dark" (click)="goToMessageSender(voter)">

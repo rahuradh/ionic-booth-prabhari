@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { SMS, SmsOptions } from '@ionic-native/sms/ngx';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { Voter } from '../models/voter.model';
 
 @Component({
@@ -44,6 +44,13 @@ export class MessageSenderPage implements OnInit {
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() {

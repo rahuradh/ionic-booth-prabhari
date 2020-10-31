@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LoadingController, ToastController, NavController, IonInfiniteScroll } from '@ionic/angular';
+import { LoadingController, ToastController, NavController, IonInfiniteScroll, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { CallNumber } from '@ionic-native/call-number/ngx';
@@ -37,6 +37,13 @@ export class SearchPagePage implements OnInit {
     if (this.accessType == "Full" || this.accessType == "Booth") {
       this.hasAccess = true;
     }
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() {
@@ -169,7 +176,7 @@ export class SearchPagePage implements OnInit {
       .then(res => console.log('Launched dialer!', res))
       .catch(err => console.log('Error launching dialer', err));
   }
-  
+
   doRefresh(event) {
     setTimeout(() => {
       this.votersList = [];

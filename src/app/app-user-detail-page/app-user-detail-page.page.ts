@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 import { User } from '../models/user.model';
 
 @Component({
@@ -47,6 +47,14 @@ export class AppUserDetailPagePage implements OnInit {
     this.loadDistrictCombo();
     this.getUser();
   }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
+  }
+
 
   ngOnInit() {
   }

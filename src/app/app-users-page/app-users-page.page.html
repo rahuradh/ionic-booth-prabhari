@@ -12,6 +12,9 @@
 </ion-header>
 
 <ion-content>
+  <ion-item >
+    <ion-label color="dark" style="font-weight: bold;">{{userList.length}} Users</ion-label>
+  </ion-item>
   <ion-list lines="none">
     <ion-item-sliding *ngFor="let user of userList">
       <ion-item class="no-padding">

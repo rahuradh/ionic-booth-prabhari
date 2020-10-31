@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-access-manager',
@@ -32,6 +32,13 @@ export class AccessManagerPage implements OnInit {
     private actRouter: ActivatedRoute) {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.loadDistrictCombo();
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
   ngOnInit() {
   }

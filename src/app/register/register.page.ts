@@ -35,6 +35,13 @@ export class RegisterPage implements OnInit {
     private firestore: AngularFirestore) {
     this.loadDistrictCombo();
   }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
+  }
 
   ngOnInit() { }
 

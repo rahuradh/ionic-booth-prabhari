@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Status } from '../models/status.model';
-import { LoadingController, ToastController, NavController, PopoverController } from '@ionic/angular';
+import { LoadingController, ToastController, NavController, PopoverController, AnimationController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CandidatePopoverPage } from '../candidate-popover/candidate-popover.page';
+import { createAnimation, Animation } from '@ionic/core';
 
 declare var google;
 
@@ -51,27 +52,38 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   private prePollVotersForCandidateList: any[] = [];
   private exitPollVotersForCandidateList: any[] = [];
 
-  private hasMessagingAccess: boolean = false;
+  @ViewChild('pollingStationNameDiv', { static: false }) pollingStationNameDiv: ElementRef;
 
   constructor(private actRouter: ActivatedRoute,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
-    private navCtrl: NavController,
+    private animationCtrl: AnimationController,
     private popoverController: PopoverController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
-    if (this.accessType == "Full") {
-      this.hasMessagingAccess = true;
-    }
+
     this.getBoothDetailStatus();
+  }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
   }
 
   ngOnInit() { }
 
   ngAfterViewInit() {
+    this.animationCtrl.create()
+      .addElement(this.pollingStationNameDiv.nativeElement)
+      .duration(7000)
+      .iterations(Infinity)
+      .fromTo('transform', 'translateX(100px)', 'translateX(-500px)')
+      .play();
   }
 
   clearAllList() {
@@ -666,5 +678,4 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     });
     return await popover.present();
   }
-
 }

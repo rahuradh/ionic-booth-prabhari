@@ -44,6 +44,13 @@ export class CandidatePagePage implements OnInit {
     }
     this.getCandidateList();
   }
+  successCallback(result) {
+    this.showToaster(result); // true - enabled, false - disabled
+  }
+
+  errorCallback(error) {
+    this.showToaster(error);
+  }
 
   ngOnInit() {
   }

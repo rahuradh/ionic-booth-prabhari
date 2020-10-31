@@ -77,6 +77,10 @@ const routes: Routes = [
   {
     path: 'app-user-detail-page/:phoneNo/:accessType/:accessCode/:userId',
     loadChildren: () => import('./app-user-detail-page/app-user-detail-page.module').then(m => m.AppUserDetailPagePageModule)
+  },
+  {
+    path: 'change-password-page/:phoneNo',
+    loadChildren: () => import('./change-password-page/change-password-page.module').then(m => m.ChangePasswordPagePageModule)
   }
 ];
 
