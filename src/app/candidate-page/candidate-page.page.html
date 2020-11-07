@@ -38,7 +38,7 @@
           </ion-row>
         </ion-grid>
       </ion-item>
-      <ion-item-options side="end" *ngIf="hasAccess">
+      <ion-item-options side="end" *ngIf="hasFullAccess">
         <ion-item-option color="danger" (click)="deleteCandidateById(candidate.id,candidate.candidateName)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-item-option>

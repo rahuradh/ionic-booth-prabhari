@@ -16,25 +16,28 @@
     </ion-item>
   </ion-toolbar>
 </ion-header>
+
 <ion-content>
   <ion-item *ngIf="showReligionCombo">
     <ion-label class="label-class" position="floating">Religion :</ion-label>
-    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="religionCode"
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="religionObject"
       (ionChange)="religionComboOnChange($event)">
-      <ion-select-option *ngFor="let religion of religionList" [value]="religion.code">{{religion.name | uppercase}}
+      <ion-select-option *ngFor="let religion of religionList" [value]="religion">{{religion.name | uppercase}}
       </ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item *ngIf="showCasteCombo">
     <ion-label class="label-class" position="floating">Caste :</ion-label>
-    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="casteCode">
-      <ion-select-option *ngFor="let caste of casteList" [value]="caste.code">{{caste.name | uppercase}}
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="casteObject"
+      (ionChange)="clearVotersList()">
+      <ion-select-option *ngFor="let caste of casteList" [value]="caste">{{caste.name | uppercase}}
       </ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item *ngIf="showGenderCombo">
     <ion-label class="label-class" position="floating">Gender :</ion-label>
-    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="genderCode">
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="genderCode"
+      (ionChange)="clearVotersList()">
       <ion-select-option value="Male">Male</ion-select-option>
       <ion-select-option value="Female">Female</ion-select-option>
     </ion-select>
@@ -50,34 +53,36 @@
   </ion-item>
   <ion-item *ngIf="showCandidateCombo">
     <ion-label class="label-class" position="floating">Candidate :</ion-label>
-    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="candidateCode">
-      <ion-select-option *ngFor="let candidate of candidateList" [value]="candidate.code">
+    <ion-select interface="action-sheet" class="custom-options" required [(ngModel)]="candidateObject"
+      (ionChange)="clearVotersList()">
+      <ion-select-option *ngFor="let candidate of candidateList" [value]="candidate">
         {{candidate.name | uppercase}}
       </ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item *ngIf="showIsDeadField">
     <ion-label class="label-class">Dead :</ion-label>
-    <ion-toggle color="primary" color="danger" [(ngModel)]="isDead"></ion-toggle>
+    <ion-toggle color="primary" color="danger" [(ngModel)]="isDead" (ionChange)="clearVotersList()"></ion-toggle>
   </ion-item>
   <ion-item *ngIf="showIsVotedField">
     <ion-label class="label-class">Voted :</ion-label>
-    <ion-toggle color="primary" color="success" [(ngModel)]="isVoted"></ion-toggle>
+    <ion-toggle color="primary" color="success" [(ngModel)]="isVoted" (ionChange)="clearVotersList()"></ion-toggle>
   </ion-item>
   <ion-item *ngIf="showIsOOSField">
     <ion-label class="label-class">Out Of Station :</ion-label>
-    <ion-toggle color="primary" color="warning" [(ngModel)]="isOOS"></ion-toggle>
+    <ion-toggle color="primary" color="warning" [(ngModel)]="isOOS" (ionChange)="clearVotersList()"></ion-toggle>
   </ion-item>
   <ion-item *ngIf="showAgeRangeField">
     <ion-label class="label-class">Age :</ion-label>
-    <ion-range dualKnobs="true" min="18" max="125" pin="true" [(ngModel)]="ageRange" color="primary">
+    <ion-range dualKnobs="true" min="18" max="125" pin="true" [(ngModel)]="ageRange" color="primary"
+      (ionChange)="clearVotersList()">
       <ion-icon size="small" slot="start" name="chevron-forward"></ion-icon>
       <ion-icon slot="end" name="chevron-back"></ion-icon>
     </ion-range>
   </ion-item>
   <ion-item *ngIf="showPhoneNoField">
     <ion-label class="label-class" position="floating">Phone No</ion-label>
-    <ion-input type="tel" [(ngModel)]="phoneNumber"></ion-input>
+    <ion-input type="tel" [(ngModel)]="phoneNumber" (ionChange)="clearVotersList()"></ion-input>
   </ion-item>
 
   <ion-button *ngIf="showSearchButton" color="dark" expand="block" (click)="search()">Search
@@ -85,6 +90,11 @@
 
   <ion-item *ngIf="showRecordCount">
     <ion-label color="dark" style="font-weight: bold;">{{recordCount}} Voters</ion-label>
+    <ion-buttons slot="end" *ngIf="showRecordCount&&recordCount!=0&&hasAccess">
+      <ion-button shape="round" (click)="downloadPdf()">
+        <ion-icon slot="icon-only" name="cloud-download-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-item>
 
   <ion-list lines="none" *ngFor="let voter of lazyLoadingVotersList">

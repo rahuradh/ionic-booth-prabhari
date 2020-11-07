@@ -80,7 +80,37 @@
     <ion-label class="label-class" position="floating">Phone No</ion-label>
     <ion-input type="tel" [(ngModel)]="voter.phoneNo" [readonly]="readOnlyMode"
       (ionChange)="checkPhoneNumber(voter.phoneNo)"></ion-input>
+    <ion-button [disabled]="readOnlyMode" slot="end" (click)="getPhoneNoFromContact()" color="light">
+      <ion-icon slot="icon-only" name="book-outline"></ion-icon>
+    </ion-button>
   </ion-item>
+
+  <ion-card *ngIf="showPhoneBook">
+    <ion-searchbar class="ion-margin-top ion-margin-bottom" placeholder="Search Contact"
+      (ionInput)="filterContact($event)" [(ngModel)]="searchValue">
+    </ion-searchbar>
+    <ion-card-content>
+      <ion-list>
+        <ion-item-sliding *ngFor="let contact of lazyLoadingContactsList">
+          <ion-label>
+            <div class="contact-name-class">
+              <h2 style="font-weight: bold;">{{contact.name}}</h2>
+            </div>
+          </ion-label>
+          <ion-item-divider>
+            <ion-list class="phone-number-chip">
+              <ion-item-sliding *ngFor="let phoneNo of contact.phoneNumbers">
+                <ion-chip color="secondary" (click)="setPhoneNo(phoneNo.value)">
+                  <ion-label color="dark">{{phoneNo.value}}</ion-label>
+                </ion-chip>
+              </ion-item-sliding>
+            </ion-list>
+          </ion-item-divider>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class">Dead</ion-label>
     <ion-toggle (ionChange)="onDeadToggleChange(voter.dead)" color="primary" color="danger" [(ngModel)]="voter.dead"

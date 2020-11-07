@@ -2,3 +2,9 @@
     font-weight: bold;
     color: rgba($color: #3498db, $alpha: 1);
 }
+.contact-name-class {
+    display: flex;
+}
+ion-list.phone-number-chip.md.list-md.hydrated {
+    display: inline-flex;
+}

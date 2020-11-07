@@ -1,3 +1,4 @@
+import { Contacts } from '@ionic-native/contacts/ngx';
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Voter } from '../models/voter.model';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +20,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   callFrom: string;
   hasAccess: boolean = false;
   isPhoneNumberExist: boolean = false;
+  showPhoneBook: boolean = false;
 
   id: string;
   readOnlyMode: boolean = true;
@@ -29,12 +31,21 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   blockPanchayatCandidateList: any;
   districtPanchayatCandidateList: any;
   voterNameColor: string = "";
+
+  contactList = [];
+  loadedContactList: any[];
+  lazyLoadingContactsList: any[] = [];
+  recordCounter: number = 0;
+  searchValue: string = "";
+
   constructor(private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private callNumber: CallNumber) {
+    private callNumber: CallNumber,
+    private contacts: Contacts) {
+
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.serialNo = this.actRouter.snapshot.paramMap.get("serialNo");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
@@ -281,6 +292,85 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.isPhoneNumberExist = false;
     } else {
       this.isPhoneNumberExist = true;
+    }
+  }
+  getContacts(): void {
+    this.contactList = [];
+    this.loadedContactList = [];
+    this.contacts.find(
+      ["displayName", "phoneNumbers", "photos"],
+      { multiple: true, hasPhoneNumber: true }
+    ).then((contacts) => {
+      for (var i = 0; i < contacts.length; i++) {
+        if (contacts[i].displayName !== null) {
+          var contact = {
+            name: contacts[i].displayName,
+            phoneNumbers: contacts[i].phoneNumbers
+          };
+          this.loadedContactList.push(contact);
+        }
+      }
+    });
+
+  }
+
+  initializeItems(): void {
+    this.contactList = this.loadedContactList;
+  }
+
+  async filterContact(event) {
+    this.initializeItems();
+    const searchTerm = event.srcElement.value;
+    if (!searchTerm) {
+      this.addFilterdContactToList();
+      return;
+    }
+    this.contactList = this.contactList.filter(contact => {
+      if (contact.name && searchTerm) {
+        if (contact.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1) {
+          return true;
+        }
+        return false;
+      }
+    });
+    this.addFilterdContactToList();
+  }
+
+  addFilterdContactToList() {
+    this.lazyLoadingContactsList = [];
+    this.recordCounter = 0;
+    this.addVotersToList();
+  }
+
+  addVotersToList() {
+    for (let i = 0; i < 10 && this.recordCounter < this.contactList.length; i++, this.recordCounter++) {
+      this.lazyLoadingContactsList.push(this.contactList[this.recordCounter])
+    }
+  }
+
+  getPhoneNoFromContact() {
+    if (this.showPhoneBook) {
+      this.showPhoneBook = false;
+    } else {
+      this.searchValue = '';
+      this.lazyLoadingContactsList = [];
+      this.showPhoneBook = true;
+      this.getContacts();
+    }
+  }
+
+  setPhoneNo(phoneNo: string) {
+    this.voter.phoneNo = '';
+    this.showPhoneBook = false;
+    var expectedPhoneNoArray = [];
+    var phoneNoArray: Array<string> = [...phoneNo];
+    for (let i = phoneNoArray.length - 1; i >= 0 && expectedPhoneNoArray.length <= 9; i--) {
+      if (phoneNoArray[i] !== ' ' && phoneNoArray[i] !== '-') {
+        expectedPhoneNoArray.push(phoneNoArray[i])
+      }
+    }
+    for (let i = expectedPhoneNoArray.length - 1; i >= 0; i--) {
+      this.voter.phoneNo += expectedPhoneNoArray[i];
     }
   }
 }

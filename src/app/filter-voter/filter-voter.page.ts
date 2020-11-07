@@ -1,8 +1,14 @@
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { DatePipe } from '@angular/common';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-filter-voter',
@@ -29,11 +35,11 @@ export class FilterVoterPage implements OnInit {
   showAgeRangeField: boolean = false;
   showPhoneNoField: boolean = false;
 
-  religionCode: string;
-  casteCode: string;
+  religionObject;
+  casteObject;
   genderCode: string;
   electionBodyCode: string = "panchayat";
-  candidateCode: string;
+  candidateObject;
   isDead: boolean = true;
   isVoted: boolean = true;
   isOOS: boolean = true;
@@ -52,17 +58,30 @@ export class FilterVoterPage implements OnInit {
   public lazyLoadingVotersList: any[] = [];
   public recordCounter: number = 0;
 
+
+  pdfObj = null;
+  filterDetailsObject: any[] = [];
+  boothDetails: any = {};
+  hasAccess: boolean = false;
   constructor(private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private callNumber: CallNumber) {
+    private callNumber: CallNumber,
+    private platform: Platform,
+    private file: File,
+    private fileOpener: FileOpener,
+    private datePipe: DatePipe) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+    if (this.accessType == "Full" || this.accessType == "Booth") {
+      this.hasAccess = true;
+    }
+    this.getBoothDetails();
   }
   successCallback(result) {
     this.showToaster(result); // true - enabled, false - disabled
@@ -135,9 +154,10 @@ export class FilterVoterPage implements OnInit {
   }
 
   religionComboOnChange(event) {
+    this.clearVotersList();
     this.casteList = [];
-    this.casteCode = "";
-    this.loadCasteCombo(this.religionCode);
+    this.casteObject = null;
+    this.loadCasteCombo(this.religionObject.code);
   }
 
   showToaster(message: string) {
@@ -209,6 +229,7 @@ export class FilterVoterPage implements OnInit {
 
   search() {
     if (this.formValidation()) {
+      this.filterDetailsObject = [];
       this.getVotersBasedOnSearchCondition();
     }
   }
@@ -231,22 +252,45 @@ export class FilterVoterPage implements OnInit {
 
   addFilter() {
     if (this.selectedValues.includes("religion")) {
-      const religionCodeValue = this.religionCode == '8080' ? '' : this.religionCode;
+      const religionCodeValue = this.religionObject.code == '8080' ? '' : this.religionObject.code;
       this.votersList = this.votersList.filter(currentVoter => {
         if (currentVoter.religion.toLowerCase() == religionCodeValue.toLowerCase()) {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Religion : ', style: 'subHeader', alignment: 'left' },
+          { text: this.religionObject.name, style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("caste")) {
-      const religionCodeValue = this.religionCode == '8080' ? '' : this.religionCode;
-      const casteCodeValue = this.casteCode == '8080' ? '' : this.casteCode;
+      const religionCodeValue = this.religionObject.code == '8080' ? '' : this.religionObject.code;
+      const casteCodeValue = this.casteObject.code == '8080' ? '' : this.casteObject.code;
       this.votersList = this.votersList.filter(currentVoter => {
         if (currentVoter.religion.toLowerCase() == religionCodeValue.toLowerCase() &&
           currentVoter.caste.toLowerCase() == casteCodeValue.toLowerCase()) {
           return true;
         }
       });
+      if (!this.selectedValues.includes("religion")) {
+        this.filterDetailsObject.push({
+          text: [
+            { text: 'Religion : ', style: 'subHeader', alignment: 'left' },
+            { text: this.religionObject.name, style: 'textValue', alignment: 'left' }
+          ]
+        });
+        this.filterDetailsObject.push("\t\t");
+      }
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Caste : ', style: 'subHeader', alignment: 'left' },
+          { text: this.casteObject.name, style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("gender")) {
       this.votersList = this.votersList.filter(currentVoter => {
@@ -254,15 +298,30 @@ export class FilterVoterPage implements OnInit {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Gender : ', style: 'subHeader', alignment: 'left' },
+          { text: this.genderCode, style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("candidate")) {
-      const candidateCodeValue = this.candidateCode == '8080' ? '' : this.candidateCode;
+      const candidateCodeValue = this.candidateObject.code == '8080' ? '' : this.candidateObject.code;
       if (this.electionBodyCode == "panchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
           if (currentVoter.panchayatVote == candidateCodeValue) {
             return true;
           }
         });
+        this.filterDetailsObject.push("\n");
+        this.filterDetailsObject.push({
+          text: [
+            { text: 'Panchayat Candidate : ', style: 'subHeader', alignment: 'left' },
+            { text: this.candidateObject.name, style: 'textValue', alignment: 'left' }
+          ]
+        });
+        this.filterDetailsObject.push("\n");
       }
       if (this.electionBodyCode == "blockPanchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
@@ -270,6 +329,14 @@ export class FilterVoterPage implements OnInit {
             return true;
           }
         });
+        this.filterDetailsObject.push("\n");
+        this.filterDetailsObject.push({
+          text: [
+            { text: 'Block Panchayat Candidate : ', style: 'subHeader', alignment: 'left' },
+            { text: this.candidateObject.name, style: 'textValue', alignment: 'left' }
+          ]
+        });
+        this.filterDetailsObject.push("\n");
       }
       if (this.electionBodyCode == "districtPanchayat") {
         this.votersList = this.votersList.filter(currentVoter => {
@@ -277,6 +344,14 @@ export class FilterVoterPage implements OnInit {
             return true;
           }
         });
+        this.filterDetailsObject.push("\n");
+        this.filterDetailsObject.push({
+          text: [
+            { text: 'District Panchayat Candidate : ', style: 'subHeader', alignment: 'left' },
+            { text: this.candidateObject.name, style: 'textValue', alignment: 'left' }
+          ]
+        });
+        this.filterDetailsObject.push("\n");
       }
     }
     if (this.selectedValues.includes("isDead")) {
@@ -285,6 +360,13 @@ export class FilterVoterPage implements OnInit {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Dead : ', style: 'subHeader', alignment: 'left' },
+          { text: this.isDead ? "YES" : "NO", style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("isVoted")) {
       this.votersList = this.votersList.filter(currentVoter => {
@@ -292,6 +374,13 @@ export class FilterVoterPage implements OnInit {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Voted : ', style: 'subHeader', alignment: 'left' },
+          { text: this.isVoted ? "YES" : "NO", style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("isOut")) {
       this.votersList = this.votersList.filter(currentVoter => {
@@ -299,6 +388,13 @@ export class FilterVoterPage implements OnInit {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Out of Station : ', style: 'subHeader', alignment: 'left' },
+          { text: this.isOOS ? "YES" : "NO", style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("ageRange")) {
       this.votersList = this.votersList.filter(currentVoter => {
@@ -306,11 +402,17 @@ export class FilterVoterPage implements OnInit {
           return true;
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Age Range : ', style: 'subHeader', alignment: 'left' },
+          { text: this.ageRange.lower + " - " + this.ageRange.upper, style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     if (this.selectedValues.includes("phoneNo")) {
       const phoneNumberValue: string = this.phoneNumber == undefined ? '' : String(this.phoneNumber);
       this.votersList = this.votersList.filter(currentVoter => {
-        console.log("A" + currentVoter.phoneNo + "A");
         if (phoneNumberValue == '') {
           if (currentVoter.phoneNo == phoneNumberValue) {
             return true;
@@ -321,6 +423,13 @@ export class FilterVoterPage implements OnInit {
           }
         }
       });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Phone No Contains : ', style: 'subHeader', alignment: 'left' },
+          { text: phoneNumberValue == '' ? "Empty" : phoneNumberValue, style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
     }
     this.votersList = this.votersList.sort((n1, n2) => {
       if (n1.serialNo > n2.serialNo) {
@@ -347,6 +456,7 @@ export class FilterVoterPage implements OnInit {
         id: voter.payload.doc.id,
         serialNo: voter.payload.doc.data()['serialNo'],
         voterName: voter.payload.doc.data()['voterName'],
+        guardianName: voter.payload.doc.data()['guardianName'],
         address: voter.payload.doc.data()['address'],
         houseNo: voter.payload.doc.data()['houseNo'],
         gender: gender,
@@ -368,8 +478,9 @@ export class FilterVoterPage implements OnInit {
     this.addFilter();
   }
   electionBodyComboOnChange(event) {
+    this.clearVotersList();
     this.candidateList = [];
-    this.candidateCode = "";
+    this.candidateObject.name = "";
     this.loadCandidateCombo();
   }
   async loadCandidateCombo() {
@@ -428,12 +539,12 @@ export class FilterVoterPage implements OnInit {
   }
 
   formValidation() {
-    if (this.selectedValues.includes('religion') && !this.religionCode) {
+    if (this.selectedValues.includes('religion') && !this.religionObject) {
       this.showToaster("Please enter Religion.");
       return false;
     }
-    if (this.selectedValues.includes("caste") && !this.casteCode) {
-      if (!this.religionCode) {
+    if (this.selectedValues.includes("caste") && !this.casteObject) {
+      if (!this.religionObject.code) {
         this.showToaster("Please enter Religion.");
         return false;
       }
@@ -444,7 +555,7 @@ export class FilterVoterPage implements OnInit {
       this.showToaster("Please enter Gender.");
       return false;
     }
-    if (this.selectedValues.includes("candidate") && !this.candidateCode) {
+    if (this.selectedValues.includes("candidate") && !this.candidateObject) {
       if (!this.electionBodyCode) {
         this.showToaster("Please enter Election Body.");
         return false;
@@ -460,4 +571,160 @@ export class FilterVoterPage implements OnInit {
       .then(res => console.log('Launched dialer!', res))
       .catch(err => console.log('Error launching dialer', err));
   }
+
+
+  createPdf() {
+    var docDefinition = {
+      header: 'App Generated Report',
+      footer: {
+        columns: [
+          {
+            text: [
+              { text: 'User Phone No : ', style: 'subTitle', alignment: 'left' },
+              { text: this.phoneNo, alignment: 'left' }
+            ]
+          },
+          {
+            text: [
+              { text: 'Created Date : ', style: 'subTitle', alignment: 'right' },
+              { text: this.datePipe.transform(new Date(), "medium"), alignment: 'right' }
+            ]
+          }
+        ]
+      },
+
+      content: [
+        { text: 'Booth Prabhari Report', style: 'title' },
+        "\n",
+        { text: 'Basic Details', style: 'header', alignment: 'left' },
+        "\n",
+        {
+          text: [
+            { text: 'District : ', style: 'subHeader', alignment: 'left' },
+            { text: this.boothDetails.districtName, style: 'textValue', alignment: 'left' },
+            "\t\t",
+            { text: 'Local Body : ', style: 'subHeader', alignment: 'center' },
+            { text: this.boothDetails.localBodyName, style: 'textValue', alignment: 'center' },
+            "\t\t",
+            { text: 'Ward : ', style: 'subHeader', alignment: 'right' },
+            { text: this.boothDetails.wardName, style: 'textValue', alignment: 'right' }
+          ]
+        },
+        "\n",
+        {
+          text: [
+            { text: 'Polling Station : ', style: 'subHeader', alignment: 'left' },
+            { text: this.boothDetails.pollingStationName, style: 'textValue', alignment: 'left' }
+          ]
+        },
+        "\n",
+        { text: 'Filter Details', style: 'header', alignment: 'left' },
+        "\n",
+        {
+          text: this.filterDetailsObject
+        },
+        "\n",
+        { text: 'Voters Details', style: 'header', alignment: 'left' },
+        "\n",
+        {
+          text: [
+            { text: 'Count : ', style: 'subHeader', alignment: 'left' },
+            { text: this.votersList.length, style: 'textValue', alignment: 'left' }
+          ]
+        },
+        "\n",
+        {
+          table: {
+            headerRows: 1,
+            widths: ['5%', '22%', '22%', '5%', '20%', '9%', '18%'],
+            body: [
+              [{ text: 'Sl. No.', style: 'tableHeader' }, { text: 'Voter Name', style: 'tableHeader' }, { text: 'Address', style: 'tableHeader' }, { text: 'Ho. No.', style: 'tableHeader' }, { text: 'Guardian\'s Name', style: 'tableHeader' }, { text: 'Gender', style: 'tableHeader' }, { text: 'Phone No.', style: 'tableHeader' }],
+              ...this.votersList.map(voter => ([{ text: voter.serialNo, bold: true }, voter.voterName, voter.address, voter.houseNo, voter.guardianName, voter.genderDB, voter.phoneNo])),
+              [{ text: 'Total Voters', colSpan: 6, style: 'tableHeader' }, {}, {}, {}, {}, {}, { text: this.votersList.length, bold: true, alignment: 'center' }]
+            ]
+          }
+        }
+
+
+      ],
+      styles: {
+        title: {
+          fontSize: 20,
+          bold: true,
+          color: '#3B89BF',
+          decoration: 'underline',
+          alignment: 'center'
+        },
+        subTitle: {
+          fontSize: 12,
+          color: '#A52721'
+        },
+        header: {
+          fontSize: 16,
+          bold: true,
+          decoration: 'underline'
+        },
+        subHeader: {
+          fontSize: 12,
+          color: '#3498db',
+          bold: true,
+        },
+        textValue: {
+          fontSize: 12,
+        },
+        tableHeader: {
+          bold: true,
+          alignment: 'center',
+          color: '#3498db'
+        }
+      }
+    }
+    this.pdfObj = pdfMake.createPdf(docDefinition);
+  }
+
+  downloadPdf() {
+    this.createPdf();
+    if (this.platform.is('cordova')) {
+      this.pdfObj.getBuffer((buffer) => {
+        var blob = new Blob([buffer], { type: 'application/pdf' });
+        // Save the PDF to the data Directory of our App
+        this.file.writeFile(this.file.dataDirectory, 'BoothPrabhariReport.pdf', blob, { replace: true }).then(fileEntry => {
+          // Open the PDf with the correct OS tools
+          this.fileOpener.open(this.file.dataDirectory + 'BoothPrabhariReport.pdf', 'application/pdf');
+        })
+      });
+    } else {
+      // On a browser simply use download!
+      this.pdfObj.download();
+    }
+  }
+  async getBoothDetails() {
+    let loader = await this.loadingCtrl.create({
+      message: "Please wait...."
+    });
+    loader.present();
+    try {
+      this.firestore.collection("pollingStationList", ref => ref.where('pollingStationCode', '==', this.boothCode)).snapshotChanges().subscribe(data => {
+        data.map(booth => {
+          this.boothDetails = {
+            districtName: String(booth.payload.doc.data()['districtName']),
+            localBodyName: String(booth.payload.doc.data()['localBodyName']),
+            wardName: String(booth.payload.doc.data()['wardName']),
+            pollingStationName: String(booth.payload.doc.data()['pollingStationName']),
+          }
+        });
+      });
+    } catch (err) {
+      this.showToaster(err);
+    }
+    loader.dismiss();
+  }
+
+  clearVotersList() {
+    this.showRecordCount = false;
+    this.recordCounter = 0;
+    this.lazyLoadingVotersList = [];
+    this.votersList = [];
+  }
+
 }

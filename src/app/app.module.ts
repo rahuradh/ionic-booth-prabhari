@@ -1,3 +1,5 @@
+import { FileOpener } from '@ionic-native/file-opener/ngx';
+import { File } from '@ionic-native/file/ngx';
 import { SMS } from '@ionic-native/sms/ngx';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import { NgModule } from '@angular/core';
@@ -14,6 +16,8 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { DatePipe } from '@angular/common';
+import { Contacts } from '@ionic-native/contacts/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -27,7 +31,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    CallNumber, AndroidPermissions, SMS
+    CallNumber, AndroidPermissions, SMS, File, FileOpener, DatePipe, Contacts
   ],
   bootstrap: [AppComponent]
 })

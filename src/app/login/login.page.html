@@ -3,7 +3,7 @@
     <ion-card-header class="ion-text-center">
       <ion-item class="ion-margin-top" color="dark">
         <h1 style="font-weight: bold;color: white;">Booth Prabhari</h1>
-        <ion-button slot="end" [routerLink]="['/register']" color="warning">
+        <ion-button [disabled]="readOnlyMode" slot="end" [routerLink]="['/register']" color="warning">
           <ion-icon slot="icon-only" name="person-add"></ion-icon>
         </ion-button>
       </ion-item>
@@ -20,9 +20,10 @@
           <ion-icon slot="icon-only" [name]="passwordEyeIcon"></ion-icon>
         </ion-button>
       </ion-item>
-      <ion-button color="dark" class="ion-margin-top ion-margin-bottom" expand="full" (click)="login(user)">Login
+      <ion-button [disabled]="readOnlyMode" color="dark" class="ion-margin-top ion-margin-bottom" expand="full"
+        (click)="login(user)">Login
       </ion-button>
-      <ion-label slot="end" class="label-class">Ver_1.4</ion-label>
+      <ion-label slot="end" class="label-class">Ver_1.5</ion-label>
     </ion-card-content>
   </ion-card>
 </ion-content>

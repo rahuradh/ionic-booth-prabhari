@@ -17,6 +17,7 @@ export class CandidatePagePage implements OnInit {
   toolbarTitle: string = "";
   candidateList: any;
   hasAccess: boolean = false;
+  hasFullAccess: boolean = false;
 
   constructor(private actRouter: ActivatedRoute,
     private loadingCtrl: LoadingController,
@@ -41,6 +42,9 @@ export class CandidatePagePage implements OnInit {
     }
     if (this.accessType == "Full" || this.accessType == "Booth") {
       this.hasAccess = true;
+    }
+    if (this.accessType == "Full") {
+      this.hasFullAccess = true;
     }
     this.getCandidateList();
   }
