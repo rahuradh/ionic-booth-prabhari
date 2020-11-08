@@ -95,11 +95,12 @@ export class DetailPagePage implements OnInit, AfterViewInit {
             religion: String(voter.payload.doc.data()['religion']),
             caste: String(voter.payload.doc.data()['caste']),
             outOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
+            outOfWard: Boolean(voter.payload.doc.data()['outOfWard']),
             dead: Boolean(voter.payload.doc.data()['dead']),
+            voted: Boolean(voter.payload.doc.data()['voted']),
             panchayatVote: String(voter.payload.doc.data()['panchayatVote']),
             blockVote: String(voter.payload.doc.data()['blockVote']),
-            districtVote: String(voter.payload.doc.data()['districtVote']),
-            voted: Boolean(voter.payload.doc.data()['voted'])
+            districtVote: String(voter.payload.doc.data()['districtVote'])
           }
         });
         if (this.voter.voted) {
@@ -274,6 +275,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   onDeadToggleChange(isDead: boolean) {
     if (isDead) {
       this.voter.outOfStation = false;
+      this.voter.outOfWard = false;
     }
   }
 
@@ -294,6 +296,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.isPhoneNumberExist = true;
     }
   }
+
   getContacts(): void {
     this.contactList = [];
     this.loadedContactList = [];
@@ -311,7 +314,6 @@ export class DetailPagePage implements OnInit, AfterViewInit {
         }
       }
     });
-
   }
 
   initializeItems(): void {

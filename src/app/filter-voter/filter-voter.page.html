@@ -10,6 +10,7 @@
         <ion-select-option value="isDead">Dead</ion-select-option>
         <ion-select-option value="isVoted">Voted</ion-select-option>
         <ion-select-option value="isOut">Out of Station</ion-select-option>
+        <ion-select-option value="isOutOfWard">Out of Ward</ion-select-option>
         <ion-select-option value="ageRange">Age</ion-select-option>
         <ion-select-option value="phoneNo">Phone Number</ion-select-option>
       </ion-select>
@@ -71,6 +72,10 @@
   <ion-item *ngIf="showIsOOSField">
     <ion-label class="label-class">Out Of Station :</ion-label>
     <ion-toggle color="primary" color="warning" [(ngModel)]="isOOS" (ionChange)="clearVotersList()"></ion-toggle>
+  </ion-item>
+  <ion-item *ngIf="showIsOOWField">
+    <ion-label class="label-class">Out Of Ward :</ion-label>
+    <ion-toggle color="primary" color="warning" [(ngModel)]="isOOW" (ionChange)="clearVotersList()"></ion-toggle>
   </ion-item>
   <ion-item *ngIf="showAgeRangeField">
     <ion-label class="label-class">Age :</ion-label>

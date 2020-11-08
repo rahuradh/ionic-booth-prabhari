@@ -20,6 +20,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   public candidateUpdateList: any[];
   public deadVotersList: any[];
   public outOfStationVoterList: any[];
+  public outOfWardVoterList: any[];
   public panchayatCandidateList: any[];
   public blockPanchayatCandidateList: any[];
   public districtPanchayatCandidateList: any[];
@@ -114,6 +115,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     this.votersList = [];
     this.deadVotersList = [];
     this.outOfStationVoterList = [];
+    this.outOfWardVoterList = [];
     this.panchayatCandidateList = [];
     this.blockPanchayatCandidateList = [];
     this.districtPanchayatCandidateList = [];
@@ -186,6 +188,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
             totalVotes: Number(this.votersList.length),
             deathVotes: Number(this.deadVotersList.length),
             outOfStationVotes: Number(this.outOfStationVoterList.length),
+            outOfWardVotes: Number(this.outOfWardVoterList.length),
             expectedPoll: Number(this.prePollVotersForCandidateList.length),
             totalPolled: Number(this.exitPollVotersForCandidateList.length),
             panchayatCandidates: panchayatCandidates,
@@ -314,6 +317,7 @@ export class StatusPagePage implements OnInit, AfterViewInit {
           return {
             isDead: Boolean(voter.payload.doc.data()['dead']),
             isOOS: Boolean(voter.payload.doc.data()['outOfStation']),
+            isOOW: Boolean(voter.payload.doc.data()['outOfWard']),
             isVoted: Boolean(voter.payload.doc.data()['voted']),
             panchanyatVote: String(voter.payload.doc.data()['panchayatVote']),
             blockPanchanyatVote: String(voter.payload.doc.data()['blockVote']),
@@ -337,6 +341,11 @@ export class StatusPagePage implements OnInit, AfterViewInit {
         });
         this.outOfStationVoterList = this.votersList.filter(currentVoter => {
           if (currentVoter.isOOS == true) {
+            return true;
+          }
+        });
+        this.outOfWardVoterList = this.votersList.filter(currentVoter => {
+          if (currentVoter.isOOW == true) {
             return true;
           }
         });

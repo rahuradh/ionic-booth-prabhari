@@ -12,9 +12,10 @@ export interface Voter {
     religion: string,
     caste: string,
     outOfStation: boolean,
+    outOfWard: boolean,
     dead: boolean,
+    voted: boolean,
     panchayatVote: string,
     blockVote: string,
-    districtVote: string,
-    voted: boolean
+    districtVote: string
 }

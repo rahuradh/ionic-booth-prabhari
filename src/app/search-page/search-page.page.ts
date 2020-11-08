@@ -70,6 +70,7 @@ export class SearchPagePage implements OnInit {
             voterId: voter.payload.doc.data()['idCardNo'],
             isVoted: Boolean(voter.payload.doc.data()['voted']),
             isOutOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
+            isOutOfWard: Boolean(voter.payload.doc.data()['outOfWard']),
             isDead: Boolean(voter.payload.doc.data()['dead']),
             phoneNo: voter.payload.doc.data()['phoneNo'],
             isPhoneNoExist: voter.payload.doc.data()['phoneNo'] == "" ? true : false

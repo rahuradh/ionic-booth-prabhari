@@ -31,6 +31,7 @@ export class FilterVoterPage implements OnInit {
   showIsDeadField: boolean = false;
   showIsVotedField: boolean = false;
   showIsOOSField: boolean = false;
+  showIsOOWField: boolean = false;
   showRecordCount: boolean = false;
   showAgeRangeField: boolean = false;
   showPhoneNoField: boolean = false;
@@ -43,6 +44,7 @@ export class FilterVoterPage implements OnInit {
   isDead: boolean = true;
   isVoted: boolean = true;
   isOOS: boolean = true;
+  isOOW: boolean = true;
   ageRange: any = {
     upper: 100,
     lower: 18
@@ -177,6 +179,7 @@ export class FilterVoterPage implements OnInit {
     this.showIsDeadField = false;
     this.showIsVotedField = false;
     this.showIsOOSField = false;
+    this.showIsOOWField = false;
     this.showRecordCount = false;
     this.showAgeRangeField = false;
     this.showPhoneNoField = false;
@@ -214,6 +217,10 @@ export class FilterVoterPage implements OnInit {
       }
       if (searchCondition == "isOut") {
         this.showIsOOSField = true;
+        this.showSearchButton = true;
+      }
+      if (searchCondition == "isOutOfWard") {
+        this.showIsOOWField = true;
         this.showSearchButton = true;
       }
       if (searchCondition == "ageRange") {
@@ -396,6 +403,20 @@ export class FilterVoterPage implements OnInit {
       });
       this.filterDetailsObject.push("\t\t");
     }
+    if (this.selectedValues.includes("isOutOfWard")) {
+      this.votersList = this.votersList.filter(currentVoter => {
+        if (currentVoter.isOutOfWard == this.isOOW) {
+          return true;
+        }
+      });
+      this.filterDetailsObject.push({
+        text: [
+          { text: 'Out of Ward : ', style: 'subHeader', alignment: 'left' },
+          { text: this.isOOW ? "YES" : "NO", style: 'textValue', alignment: 'left' }
+        ]
+      });
+      this.filterDetailsObject.push("\t\t");
+    }
     if (this.selectedValues.includes("ageRange")) {
       this.votersList = this.votersList.filter(currentVoter => {
         if (currentVoter.age >= this.ageRange.lower && currentVoter.age <= this.ageRange.upper) {
@@ -464,6 +485,7 @@ export class FilterVoterPage implements OnInit {
         voterId: voter.payload.doc.data()['idCardNo'],
         isVoted: Boolean(voter.payload.doc.data()['voted']),
         isOutOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
+        isOutOfWard: Boolean(voter.payload.doc.data()['outOfWard']),
         isDead: Boolean(voter.payload.doc.data()['dead']),
         religion: voter.payload.doc.data()['religion'],
         caste: voter.payload.doc.data()['caste'],

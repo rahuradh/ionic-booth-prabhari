@@ -5,7 +5,8 @@ export interface Status {
     pollingStationName: string,
     totalVotes: number,
     deathVotes: number,
-    outOfStationVotes: number
+    outOfStationVotes: number,
+    outOfWardVotes: number
     expectedPoll: number,
     totalPolled: number,
     panchayatCandidates: number,

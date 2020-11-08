@@ -37,7 +37,10 @@
           <ion-label style="color:white;">Dead</ion-label>
         </ion-chip>
         <ion-chip *ngIf="voter.isOutOfStation" outline style="background:#92949c">
-          <ion-label style="color:white;">Out</ion-label>
+          <ion-label style="color:white;">OOS</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="voter.isOutOfWard" outline style="background:#476af5">
+          <ion-label style="color:white;">OOW</ion-label>
         </ion-chip>
         <ion-chip *ngIf="voter.isVoted" style="background:#2dd36f">
           <ion-label style="color:white;">Voted</ion-label>

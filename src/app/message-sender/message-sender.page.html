@@ -11,7 +11,7 @@
       <h4 style="font-weight: bold;">{{voter.serialNo}}</h4>
     </ion-text>
     <ion-text class="ion-text-center" [color]="voterNameColor">
-      <h4 style="font-weight: bold;">{{voter.voterName}}</h4>
+      <h4 style="font-weight: bold;">{{voter.voterName}}&nbsp;{{voter.displayAge}}</h4>
     </ion-text>
     <ion-buttons slot="start">
       <ion-button (click)="goToPrevious()" [disabled]="!readOnlyMode">
@@ -73,13 +73,28 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item class="ion-margin-top ion-margin-bottom">
-    <ion-label class="label-class" position="floating">Salutation</ion-label>
-    <ion-input type="text" placeholder="Eg: നമസ്കാരം (optional)" [(ngModel)]="salutation"></ion-input>
+  <ion-item *ngIf="voter.isDead||voter.isOutOfStation||voter.isOutOfWard" class="ion-margin-top ion-margin-bottom">
+    <ion-chip *ngIf="voter.isDead" outline style="background:#eb445a">
+      <ion-label style="color:white;">Dead</ion-label>
+    </ion-chip>
+    <ion-chip *ngIf="voter.isOutOfStation" outline style="background:#92949c">
+      <ion-label style="color:white;">OOS</ion-label>
+    </ion-chip>
+    <ion-chip *ngIf="voter.isOutOfWard" outline style="background:#476af5">
+      <ion-label style="color:white;">OOW</ion-label>
+    </ion-chip>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
-    <ion-label class="label-class">Use Salutation</ion-label>
-    <ion-toggle color="primary" color="success" [(ngModel)]="isSalutationRequired"></ion-toggle>
+    <ion-label class="label-class" position="floating">Salutation 1</ion-label>
+    <ion-input type="text" [(ngModel)]="salutation1"></ion-input>
+    <ion-checkbox (ionChange)="onsalutation1ToggleChange()" slot="end" [(ngModel)]="isSalutation1Required">
+    </ion-checkbox>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Salutation 2</ion-label>
+    <ion-input type="text" [(ngModel)]="salutation2"></ion-input>
+    <ion-checkbox (ionChange)="onsalutation2ToggleChange()" slot="end" [(ngModel)]="isSalutation2Required">
+    </ion-checkbox>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class" position="floating">Message Content</ion-label>

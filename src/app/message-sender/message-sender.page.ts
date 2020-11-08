@@ -13,18 +13,19 @@ import { Voter } from '../models/voter.model';
 })
 export class MessageSenderPage implements OnInit {
 
-  salutation: string = "";
+  salutation1: string = "";
+  salutation2: string = "";
   messageContent: string;
 
-  voter = {} as Voter;
+  voter: any = {};
   boothCode: string;
   serialNo: string;
   accessType: string;
   phoneNo: string;
   callFrom: string;
   isPhoneNumberExist: boolean = false;
-  isSalutationRequired: boolean = true;
-
+  isSalutation1Required: boolean = false;
+  isSalutation2Required: boolean = true;
 
   id: string;
   readOnlyMode: boolean = true;
@@ -46,7 +47,7 @@ export class MessageSenderPage implements OnInit {
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
   }
   successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
+    this.showToaster(result);
   }
 
   errorCallback(error) {
@@ -71,8 +72,12 @@ export class MessageSenderPage implements OnInit {
           this.id = voter.payload.doc.id;
           this.serialNo = String(voter.payload.doc.data()['serialNo']);
           let voterName = String(voter.payload.doc.data()['voterName']);
-          this.salutation = "നമസ്കാരം " + voterName + " ജി,";
+          let gender = String(voter.payload.doc.data()['gender']);
+          let salutation: string = gender == "Male" ? "നമസ്കാരം ശ്രീ " : "നമസ്കാരം ശ്രീമതി ";
+          this.salutation1 = salutation + voterName + ",";
+          this.salutation2 = "നമസ്കാരം " + voterName + " ജി,";
           this.checkPhoneNumber(String(voter.payload.doc.data()['phoneNo']));
+          let displayAge = "(" + Number(voter.payload.doc.data()['age']) + ")";
 
           this.voter = {
             boothCode: String(voter.payload.doc.data()['boothCode']),
@@ -83,12 +88,14 @@ export class MessageSenderPage implements OnInit {
             address: String(voter.payload.doc.data()['address']),
             gender: String(voter.payload.doc.data()['gender']),
             age: Number(voter.payload.doc.data()['age']),
+            displayAge: displayAge,
             idCardNo: String(voter.payload.doc.data()['idCardNo']),
             phoneNo: String(voter.payload.doc.data()['phoneNo']),
             religion: String(voter.payload.doc.data()['religion']),
             caste: String(voter.payload.doc.data()['caste']),
-            outOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
-            dead: Boolean(voter.payload.doc.data()['dead']),
+            isOutOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
+            isOutOfWard: Boolean(voter.payload.doc.data()['outOfWard']),
+            isDead: Boolean(voter.payload.doc.data()['dead']),
             panchayatVote: String(voter.payload.doc.data()['panchayatVote']),
             blockVote: String(voter.payload.doc.data()['blockVote']),
             districtVote: String(voter.payload.doc.data()['districtVote']),
@@ -190,8 +197,10 @@ export class MessageSenderPage implements OnInit {
         }
       }
       var smsContent: string = "";
-      if (this.salutation != undefined && this.salutation != '' && this.isSalutationRequired) {
-        smsContent = this.salutation + "\n\n" + this.messageContent;
+      if (this.isSalutation1Required) {
+        smsContent = this.salutation1 + "\n\n" + this.messageContent;
+      } else if (this.isSalutation2Required) {
+        smsContent = this.salutation2 + "\n\n" + this.messageContent;
       } else {
         smsContent = this.messageContent;
       }
@@ -205,8 +214,10 @@ export class MessageSenderPage implements OnInit {
   sendWhatsAppMessage() {
     if (this.formValidation()) {
       var whatsAppMsgContent: string = "";
-      if (this.salutation != undefined && this.salutation != '' && this.isSalutationRequired) {
-        whatsAppMsgContent = this.salutation + "\n\n" + this.messageContent;
+      if (this.isSalutation1Required) {
+        whatsAppMsgContent = this.salutation1 + "\n\n" + this.messageContent;
+      } else if (this.isSalutation2Required) {
+        whatsAppMsgContent = this.salutation2 + "\n\n" + this.messageContent;
       } else {
         whatsAppMsgContent = this.messageContent;
       }
@@ -233,6 +244,16 @@ export class MessageSenderPage implements OnInit {
       this.isPhoneNumberExist = false;
     } else {
       this.isPhoneNumberExist = true;
+    }
+  }
+  onsalutation1ToggleChange() {
+    if (this.isSalutation1Required) {
+      this.isSalutation2Required = false;
+    }
+  }
+  onsalutation2ToggleChange() {
+    if (this.isSalutation2Required) {
+      this.isSalutation1Required = false;
     }
   }
 

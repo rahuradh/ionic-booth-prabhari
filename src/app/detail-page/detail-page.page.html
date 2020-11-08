@@ -118,7 +118,12 @@
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
     <ion-label class="label-class">Out of Station</ion-label>
-    <ion-toggle color="warning" [(ngModel)]=" voter.outOfStation" [disabled]="readOnlyMode||voter.dead">
+    <ion-toggle color="warning" [(ngModel)]=" voter.outOfStation" [disabled]="readOnlyMode||voter.dead||voter.outOfWard">
+    </ion-toggle>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class">Out of Ward</ion-label>
+    <ion-toggle color="warning" [(ngModel)]=" voter.outOfWard" [disabled]="readOnlyMode||voter.dead||voter.outOfStation">
     </ion-toggle>
   </ion-item>
   <ion-item class="ion-margin-top ion-margin-bottom">
