@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { ToastController, LoadingController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { AuditLog } from '../models/auditLog.model';
 
 @Component({
   selector: 'app-register',
@@ -28,6 +29,8 @@ export class RegisterPage implements OnInit {
   passwordType: string = "password";
   blockUpdateBackCall: boolean = true;
   backButtonSubscription;
+
+  auditLog = {} as AuditLog;
 
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
@@ -67,6 +70,7 @@ export class RegisterPage implements OnInit {
             this.user.isAdminApproved = false;
             this.blockUpdateBackCall = false;
             this.firestore.collection("usersList").add(this.user);
+            this.logUserLogin(this.user);
             this.navCtrl.navigateRoot("dashboard/" + user.phoneNo);
           } else if (this.blockUpdateBackCall) {
             this.showToaster("This Phone Number is already registered. Please try another.");
@@ -274,6 +278,30 @@ export class RegisterPage implements OnInit {
   showHidePassword() {
     this.passwordEyeIcon = this.passwordEyeIcon == "eye" ? "eye-off" : "eye";
     this.passwordType = this.passwordType == "password" ? "text" : "password";
+  }
+
+  async logUserLogin(currentUser: any) {
+    let loader = this.loadingCtrl.create({
+      message: "Please wait...."
+    });
+    (await loader).present();
+    try {
+      this.auditLog = {
+        name: currentUser.name,
+        partyResponsibility: currentUser.partyResponsibility,
+        phoneNo: currentUser.phoneNo,
+        password: currentUser.password,
+        accessType: currentUser.accessType,
+        accessCode: currentUser.accessCode,
+        isAdminApproved: currentUser.isAdminApproved,
+        activity: 'Registerd',
+        loggedTime: new Date()
+      }
+      await this.firestore.collection("auditLogList").add(this.auditLog);
+    } catch (err) {
+      this.showToaster(err);
+    }
+    (await loader).dismiss();
   }
 
 }
