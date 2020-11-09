@@ -159,7 +159,7 @@ export class LoginPage implements OnInit {
         accessCode: String(currentUser.payload.doc.data()['accessCode']),
         isAdminApproved: Boolean(currentUser.payload.doc.data()['isAdminApproved']),
         activity: 'Logged In',
-        loggedTime: new Date(),
+        loggedTime: new Date()
       }
       await this.firestore.collection("auditLogList").add(this.auditLog);
     } catch (err) {

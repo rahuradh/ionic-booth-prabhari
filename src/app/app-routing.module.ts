@@ -81,6 +81,10 @@ const routes: Routes = [
   {
     path: 'change-password-page/:phoneNo',
     loadChildren: () => import('./change-password-page/change-password-page.module').then(m => m.ChangePasswordPagePageModule)
+  },
+  {
+    path: 'audit-log/:phoneNo',
+    loadChildren: () => import('./audit-log/audit-log.module').then(m => m.AuditLogPageModule)
   }
 ];
 

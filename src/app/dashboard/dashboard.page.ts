@@ -335,4 +335,7 @@ export class DashboardPage implements OnInit {
   goToPasswordChangnePage(): void {
     this.navCtrl.navigateRoot("change-password-page/" + this.phoneNo);
   }
+  goToAuditLog(): void {
+    this.navCtrl.navigateRoot("audit-log/" + this.phoneNo);
+  }
 }
