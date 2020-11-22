@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { LoadingController, ToastController, NavController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CallNumber } from '@ionic-native/call-number/ngx';
+import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-detail-page',
@@ -38,13 +39,20 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   recordCounter: number = 0;
   searchValue: string = "";
 
+  religionCode = "";
+  casteCode: string = "";
+  panchayatVoteCode = "";
+  blockVoteCode = "";
+  districtVoteCode = "";
+
   constructor(private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
     private callNumber: CallNumber,
-    private contacts: Contacts) {
+    private contacts: Contacts,
+    private titleCasePipe: TitleCasePipe) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.serialNo = this.actRouter.snapshot.paramMap.get("serialNo");
@@ -55,18 +63,13 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       this.hasAccess = true;
     }
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
 
-  errorCallback(error) {
-    this.showToaster(error);
-  }
   ngOnInit() {
-  }
-  ngAfterViewInit() {
     this.loadReligionCombo();
     this.loadCandidateCombo();
+  }
+
+  ngAfterViewInit() {
     this.getVoter(this.serialNo);
   }
 
@@ -81,26 +84,31 @@ export class DetailPagePage implements OnInit, AfterViewInit {
           this.id = voter.payload.doc.id;
           this.serialNo = String(voter.payload.doc.data()['serialNo'])
           this.checkPhoneNumber(String(voter.payload.doc.data()['phoneNo']));
+          this.religionCode = String(voter.payload.doc.data()['religion']);
+          this.casteCode = String(voter.payload.doc.data()['caste']);
+          this.panchayatVoteCode = String(voter.payload.doc.data()['panchayatVote']);
+          this.blockVoteCode = String(voter.payload.doc.data()['blockVote']);
+          this.districtVoteCode = String(voter.payload.doc.data()['districtVote']);
           this.voter = {
             boothCode: String(voter.payload.doc.data()['boothCode']),
             serialNo: Number(voter.payload.doc.data()['serialNo']),
-            voterName: String(voter.payload.doc.data()['voterName']),
-            guardianName: String(voter.payload.doc.data()['guardianName']),
+            voterName: this.titleCasePipe.transform(String(voter.payload.doc.data()['voterName'])),
+            guardianName: this.titleCasePipe.transform(String(voter.payload.doc.data()['guardianName'])),
             houseNo: String(voter.payload.doc.data()['houseNo']),
-            address: String(voter.payload.doc.data()['address']),
+            address: this.titleCasePipe.transform(String(voter.payload.doc.data()['address'])),
             gender: String(voter.payload.doc.data()['gender']),
             age: Number(voter.payload.doc.data()['age']),
             idCardNo: String(voter.payload.doc.data()['idCardNo']),
             phoneNo: String(voter.payload.doc.data()['phoneNo']),
-            religion: String(voter.payload.doc.data()['religion']),
-            caste: String(voter.payload.doc.data()['caste']),
+            religion: this.religionCode,
+            caste: this.casteCode,
             outOfStation: Boolean(voter.payload.doc.data()['outOfStation']),
             outOfWard: Boolean(voter.payload.doc.data()['outOfWard']),
             dead: Boolean(voter.payload.doc.data()['dead']),
             voted: Boolean(voter.payload.doc.data()['voted']),
-            panchayatVote: String(voter.payload.doc.data()['panchayatVote']),
-            blockVote: String(voter.payload.doc.data()['blockVote']),
-            districtVote: String(voter.payload.doc.data()['districtVote'])
+            panchayatVote: this.panchayatVoteCode,
+            blockVote: this.blockVoteCode,
+            districtVote: this.districtVoteCode
           }
         });
         if (this.voter.voted) {
@@ -152,6 +160,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
       try {
         await this.firestore.doc("votersList/" + this.id).update(this.voter);
         this.readOnlyMode = true;
+        this.showPhoneBook = false;
       } catch (err) {
         this.showToaster(err);
       }
@@ -261,6 +270,7 @@ export class DetailPagePage implements OnInit, AfterViewInit {
           }
           return 0;
         });
+        this.voter.caste = this.casteCode;
       });
     } catch (err) {
       this.showToaster(err);
@@ -269,6 +279,8 @@ export class DetailPagePage implements OnInit, AfterViewInit {
   }
 
   religionComboOnChange(event) {
+    this.voter.caste = "";
+    this.casteList = [];
     this.loadCasteCombo(this.voter.religion);
   }
 

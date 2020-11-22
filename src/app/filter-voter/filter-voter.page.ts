@@ -7,7 +7,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { CallNumber } from '@ionic-native/call-number/ngx';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { DatePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -74,7 +74,8 @@ export class FilterVoterPage implements OnInit {
     private platform: Platform,
     private file: File,
     private fileOpener: FileOpener,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private titleCasePipe: TitleCasePipe) {
 
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
@@ -84,13 +85,6 @@ export class FilterVoterPage implements OnInit {
       this.hasAccess = true;
     }
     this.getBoothDetails();
-  }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
   }
 
   ngOnInit() {
@@ -658,11 +652,11 @@ export class FilterVoterPage implements OnInit {
         {
           table: {
             headerRows: 1,
-            widths: ['5%', '22%', '22%', '5%', '20%', '9%', '18%'],
+            widths: ['5%', '22%', '20%', '5%', '20%', '5%', '9%', '16%'],
             body: [
-              [{ text: 'Sl. No.', style: 'tableHeader' }, { text: 'Voter Name', style: 'tableHeader' }, { text: 'Address', style: 'tableHeader' }, { text: 'Ho. No.', style: 'tableHeader' }, { text: 'Guardian\'s Name', style: 'tableHeader' }, { text: 'Gender', style: 'tableHeader' }, { text: 'Phone No.', style: 'tableHeader' }],
-              ...this.votersList.map(voter => ([{ text: voter.serialNo, bold: true }, voter.voterName, voter.address, voter.houseNo, voter.guardianName, voter.genderDB, voter.phoneNo])),
-              [{ text: 'Total Voters', colSpan: 6, style: 'tableHeader' }, {}, {}, {}, {}, {}, { text: this.votersList.length, bold: true, alignment: 'center' }]
+              [{ text: 'Sl. No.', style: 'tableHeader' }, { text: 'Voter Name', style: 'tableHeader' }, { text: 'Address', style: 'tableHeader' }, { text: 'Ho. No.', style: 'tableHeader' }, { text: 'Guardian\'s Name', style: 'tableHeader' }, { text: 'Age', style: 'tableHeader' }, { text: 'Gender', style: 'tableHeader' }, { text: 'Phone No.', style: 'tableHeader' }],
+              ...this.votersList.map(voter => ([{ text: voter.serialNo, bold: true }, this.titleCasePipe.transform(voter.voterName), this.titleCasePipe.transform(voter.address), voter.houseNo, this.titleCasePipe.transform(voter.guardianName), voter.age, voter.genderDB, voter.phoneNo])),
+              [{ text: 'Total Voters', colSpan: 7, style: 'tableHeader' }, {}, {}, {}, {}, {}, {}, { text: this.votersList.length, bold: true, alignment: 'center' }]
             ]
           }
         }

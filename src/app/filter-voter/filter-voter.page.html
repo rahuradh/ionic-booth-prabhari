@@ -96,13 +96,13 @@
   <ion-item *ngIf="showRecordCount">
     <ion-label color="dark" style="font-weight: bold;">{{recordCount}} Voters</ion-label>
     <ion-buttons slot="end" *ngIf="showRecordCount&&recordCount!=0&&hasAccess">
-      <ion-button shape="round" (click)="downloadPdf()">
-        <ion-icon slot="icon-only" name="cloud-download-outline"></ion-icon>
+      <ion-button shape="round" (click)="downloadPdf()" color="primary">
+        <ion-icon slot="icon-only" name="cloud-download"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-item>
 
-  <ion-list lines="none" *ngFor="let voter of lazyLoadingVotersList">
+  <ion-list lines="inset" *ngFor="let voter of lazyLoadingVotersList">
     <ion-item class="no-padding">
       <ion-avatar slot="start">
         <img [src]="voter.gender">
@@ -110,10 +110,10 @@
       <ion-label (click)="openDetailPage(voter)">
         <div class="voter-name-class">
           <h2 style="font-weight: bold;color: rgb(241, 60, 166);">{{voter.serialNo}}&nbsp;&nbsp; </h2>
-          <h2 style="font-weight: bold;">{{voter.voterName}}</h2>
+          <h2 style="font-weight: bold;">{{voter.voterName | titlecase }}</h2>
           <h2 style="font-weight: bold;color: #F1948A;">&nbsp;({{voter.age}})</h2>
         </div>
-        <p>{{voter.houseNo}}, {{voter.address}}</p>
+        <p>{{voter.houseNo}}, {{voter.address | titlecase }}</p>
         <p style="font-weight: bold;">{{voter.voterId}}</p>
         <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
       </ion-label>

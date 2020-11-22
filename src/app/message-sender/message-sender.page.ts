@@ -1,10 +1,10 @@
-import { ThrowStmt } from '@angular/compiler';
+import { TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { SMS, SmsOptions } from '@ionic-native/sms/ngx';
-import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
-import { Voter } from '../models/voter.model';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 
 @Component({
   selector: 'app-message-sender',
@@ -39,23 +39,20 @@ export class MessageSenderPage implements OnInit {
     private firestore: AngularFirestore,
     private actRouter: ActivatedRoute,
     private navCtrl: NavController,
-    private sms: SMS) {
+    private sms: SMS,
+    private titleCasePipe: TitleCasePipe,
+    private socialSharing: SocialSharing) {
+
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.serialNo = this.actRouter.snapshot.paramMap.get("serialNo");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
   }
-  successCallback(result) {
-    this.showToaster(result);
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
   }
+
   ngAfterViewInit() {
     this.loadCandidateCombo();
     this.getVoter(this.serialNo);
@@ -71,7 +68,7 @@ export class MessageSenderPage implements OnInit {
         data.map(voter => {
           this.id = voter.payload.doc.id;
           this.serialNo = String(voter.payload.doc.data()['serialNo']);
-          let voterName = String(voter.payload.doc.data()['voterName']);
+          let voterName = this.titleCasePipe.transform(String(voter.payload.doc.data()['voterName']));
           let gender = String(voter.payload.doc.data()['gender']);
           let salutation: string = gender == "Male" ? "നമസ്കാരം ശ്രീ " : "നമസ്കാരം ശ്രീമതി ";
           this.salutation1 = salutation + voterName + ",";
@@ -82,10 +79,10 @@ export class MessageSenderPage implements OnInit {
           this.voter = {
             boothCode: String(voter.payload.doc.data()['boothCode']),
             serialNo: Number(voter.payload.doc.data()['serialNo']),
-            voterName: String(voter.payload.doc.data()['voterName']),
-            guardianName: String(voter.payload.doc.data()['guardianName']),
+            voterName: voterName,
+            guardianName: this.titleCasePipe.transform(String(voter.payload.doc.data()['guardianName'])),
             houseNo: String(voter.payload.doc.data()['houseNo']),
-            address: String(voter.payload.doc.data()['address']),
+            address: this.titleCasePipe.transform(String(voter.payload.doc.data()['address'])),
             gender: String(voter.payload.doc.data()['gender']),
             age: Number(voter.payload.doc.data()['age']),
             displayAge: displayAge,
@@ -123,9 +120,11 @@ export class MessageSenderPage implements OnInit {
   goToNext() {
     this.getVoter(String(Number(this.serialNo) + 1));
   }
+
   goToPrevious() {
     this.getVoter(String(Number(this.serialNo) - 1));
   }
+
   goToCallerPage() {
     if (this.callFrom == "SearchPage") {
       this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage" + "/search-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
@@ -211,7 +210,8 @@ export class MessageSenderPage implements OnInit {
       });
     }
   }
-  sendWhatsAppMessage() {
+  
+   sendWhatsAppMessage() {
     if (this.formValidation()) {
       var whatsAppMsgContent: string = "";
       if (this.isSalutation1Required) {
@@ -221,12 +221,12 @@ export class MessageSenderPage implements OnInit {
       } else {
         whatsAppMsgContent = this.messageContent;
       }
-      const urlContent = window.encodeURIComponent(whatsAppMsgContent);
-      console.log(urlContent);
-      const url: string = "http://wa.me/" + '91' + this.voter.phoneNo + "?text=" + urlContent;
-      window.location.href = url;
+      this.socialSharing.shareViaWhatsAppToReceiver('91' + this.voter.phoneNo, whatsAppMsgContent, null, null).then(() => {
+      }).catch((error) => {
+      });
     }
   }
+
   formValidation() {
     if (!this.voter.phoneNo || this.voter.phoneNo.length < 10) {
       this.showToaster("Enter valid Phone Number with out 91.>");
@@ -256,5 +256,4 @@ export class MessageSenderPage implements OnInit {
       this.isSalutation1Required = false;
     }
   }
-
 }

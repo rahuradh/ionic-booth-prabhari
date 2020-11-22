@@ -13,6 +13,9 @@
     <ion-text class="ion-text-center" [color]="voterNameColor">
       <h4 style="font-weight: bold;">{{voter.voterName}}&nbsp;{{voter.displayAge}}</h4>
     </ion-text>
+    <ion-text class="ion-text-center" [color]="voterNameColor">
+      <h4>{{voter.address}}</h4>
+    </ion-text>
     <ion-buttons slot="start">
       <ion-button (click)="goToPrevious()" [disabled]="!readOnlyMode">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>

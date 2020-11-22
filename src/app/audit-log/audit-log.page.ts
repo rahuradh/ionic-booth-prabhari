@@ -1,4 +1,5 @@
-import { DatePipe } from '@angular/common';
+import { CallNumber } from '@ionic-native/call-number/ngx';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
@@ -18,7 +19,9 @@ export class AuditLogPage implements OnInit {
     private firestore: AngularFirestore,
     private navCtrl: NavController,
     private actRouter: ActivatedRoute,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe,
+    private titleCasePipe: TitleCasePipe,
+    private callNumber: CallNumber) {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.loadAuditLogList();
   }
@@ -45,8 +48,8 @@ export class AuditLogPage implements OnInit {
           }
           return {
             id: auditLog.payload.doc.id,
-            name: auditLog.payload.doc.data()['name'],
-            partyResponsibility: auditLog.payload.doc.data()['partyResponsibility'],
+            name: this.titleCasePipe.transform(String(auditLog.payload.doc.data()['name'])),
+            partyResponsibility: this.titleCasePipe.transform(String(auditLog.payload.doc.data()['partyResponsibility'])),
             phoneNo: auditLog.payload.doc.data()['phoneNo'],
             password: auditLog.payload.doc.data()['password'],
             accessType: auditLog.payload.doc.data()['accessType'],
@@ -95,5 +98,11 @@ export class AuditLogPage implements OnInit {
       this.loadAuditLogList();
       event.target.complete();
     }, 200)
+  }
+
+  callUser(phoneNo: string) {
+    this.callNumber.callNumber(phoneNo, true)
+      .then(res => console.log('Launched dialer!', res))
+      .catch(err => console.log('Error launching dialer', err));
   }
 }

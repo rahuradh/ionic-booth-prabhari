@@ -1,3 +1,4 @@
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { SMS } from '@ionic-native/sms/ngx';
@@ -16,7 +17,7 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
-import { DatePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Contacts } from '@ionic-native/contacts/ngx';
 
 @NgModule({
@@ -28,10 +29,10 @@ import { Contacts } from '@ionic-native/contacts/ngx';
     AngularFireModule.initializeApp(environment.FIREBASE_CONFIG),
     AngularFirestoreModule],
   providers: [
-    StatusBar,
-    SplashScreen,
+    StatusBar, SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    CallNumber, AndroidPermissions, SMS, File, FileOpener, DatePipe, Contacts
+    CallNumber, AndroidPermissions, SMS, File, FileOpener, DatePipe, Contacts,
+    TitleCasePipe, SocialSharing
   ],
   bootstrap: [AppComponent]
 })

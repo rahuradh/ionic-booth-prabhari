@@ -20,10 +20,10 @@
         <ion-label (click)="openDetailPage(voter)">
           <div class="voter-name-class">
             <h1 style="font-weight: bold;color: rgb(241, 60, 166);">{{voter.serialNo}}&nbsp;</h1>
-            <h2 style="font-weight: bold;">{{voter.voterName}}</h2>
+            <h2 style="font-weight: bold;">{{voter.voterName | titlecase }}</h2>
             <h2 style="font-weight: bold;color: #F1948A;">&nbsp;({{voter.age}})</h2>
           </div>
-          <p>{{voter.houseNo}}, {{voter.address}}</p>
+          <p>{{voter.houseNo}}, {{voter.address | titlecase }}</p>
           <p style="font-weight: bold;">{{voter.voterId}}</p>
           <p style="font-weight: bold; color:#3dc2ff" *ngIf="!voter.isPhoneNoExist">Ph No : {{voter.phoneNo}}</p>
         </ion-label>

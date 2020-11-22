@@ -16,7 +16,7 @@ export class LoginPage implements OnInit {
   user = {} as User;
   passwordEyeIcon: string = "eye";
   passwordType: string = "password";
-  currentVersion: string = "1.5";
+  currentVersion: string = "1.6";
   readOnlyMode: boolean = false;
   auditLog = {} as AuditLog;
 
