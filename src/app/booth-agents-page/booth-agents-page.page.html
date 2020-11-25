@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-title>Booth Agents List</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToStatusPage()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="addBoothAgent()" color="dark">
+        <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label color="dark" style="font-weight: bold;">{{userList.length}} Booth Agents</ion-label>
+  </ion-item>
+  <ion-list lines="none">
+    <ion-item-sliding *ngFor="let user of userList">
+      <ion-item class="no-padding">
+        <ion-label (click)="openBoothAgentDetailPage(user)">
+          <div class="user-name-class">
+            <h2 style="font-weight: bold;">{{user.userName}}</h2>
+          </div>
+          <p>{{user.partyResponsibility}}</p>
+          <p style="font-weight: bold; color:#3dc2ff">{{user.phoneNumber}}</p>
+        </ion-label>
+        <ion-button slot="end" shape="round" (click)="callUser(user.phoneNumber)" color="primary">
+          <ion-icon slot="icon-only" name="call"></ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item-divider>
+        <ion-chip *ngIf="user.isAdminApproved" style="background:#2dd36f">
+          <ion-label style="color:white;">Access Granted</ion-label>
+        </ion-chip>
+        <ion-chip *ngIf="!user.isAdminApproved" style="background:#ffc409">
+          <ion-label style="color:white;">Access Pending</ion-label>
+        </ion-chip>
+      </ion-item-divider>
+
+      <ion-item-options side="start">
+        <ion-item-option color="success" (click)="manageAccess(user.id,user.isAdminApproved=true)">
+          <ion-icon slot="icon-only" name="happy-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end">
+        <ion-item-option color="warning" (click)="manageAccess(user.id,user.isAdminApproved=false)">
+          <ion-icon slot="icon-only" name="sad-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>

@@ -16,7 +16,7 @@ export class LoginPage implements OnInit {
   user = {} as User;
   passwordEyeIcon: string = "eye";
   passwordType: string = "password";
-  currentVersion: string = "1.6";
+  currentVersion: string = "1.7";
   readOnlyMode: boolean = false;
   auditLog = {} as AuditLog;
 
@@ -50,14 +50,6 @@ export class LoginPage implements OnInit {
         await alert.present();
       }
     });
-  }
-
-  successCallback(result) {
-    this.showToaster(result);
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
   }
 
   ngOnInit() {

@@ -22,13 +22,6 @@ export class AccessPagePage implements OnInit {
     }
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
 

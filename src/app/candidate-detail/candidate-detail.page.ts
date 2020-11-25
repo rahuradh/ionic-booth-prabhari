@@ -56,13 +56,6 @@ export class CandidateDetailPage implements OnInit {
       this.readOnlyMode = false;
     }
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
   }

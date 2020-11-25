@@ -33,13 +33,7 @@ export class AccessManagerPage implements OnInit {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.loadDistrictCombo();
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
+  
   ngOnInit() {
   }
 

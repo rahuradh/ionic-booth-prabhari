@@ -34,13 +34,6 @@ export class CandidatePopoverPage implements OnInit {
     this.phoneNo = this.navParams.get('phoneNo');
     this.callFrom = this.navParams.get('callFrom');
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
   }

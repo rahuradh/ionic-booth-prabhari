@@ -8,11 +8,11 @@
       <ion-icon name="search"></ion-icon>
       <ion-label>Search Voter</ion-label>
     </ion-tab-button>
-    <ion-tab-button [class]="statusTabClass" (click)="goToStatusPage()">
+    <ion-tab-button [class]="statusTabClass" (click)="goToStatusPage()" [disabled]="hasAccess">
       <ion-icon name="pie-chart"></ion-icon>
       <ion-label>Booth Status</ion-label>
     </ion-tab-button>
-    <ion-tab-button [class]="filterTabClass" (click)="goToFilterPage()">
+    <ion-tab-button [class]="filterTabClass" (click)="goToFilterPage()" [disabled]="hasAccess">
       <ion-icon name="filter"></ion-icon>
       <ion-label>Filter Voter</ion-label>
     </ion-tab-button>

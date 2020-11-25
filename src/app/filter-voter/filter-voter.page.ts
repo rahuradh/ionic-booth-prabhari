@@ -461,7 +461,9 @@ export class FilterVoterPage implements OnInit {
 
 
   openDetailPage(voter) {
-    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
+    if (this.accessType == "Full" || this.accessType == "Booth") {
+      this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/FilterPage");
+    }
   }
 
   generateVotersList(data) {

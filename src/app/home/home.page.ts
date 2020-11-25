@@ -16,6 +16,7 @@ export class HomePage implements OnInit {
   statusTabClass = 'tab-unselected';
   filterTabClass = 'tab-unselected';
   backTabClass = 'tab-unselected';
+  hasAccess: boolean = false;
   constructor(private actRouter: ActivatedRoute,
     private navCtrl: NavController,
     private toastCtrl: ToastController) {
@@ -23,13 +24,9 @@ export class HomePage implements OnInit {
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
-  }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
+    if (this.accessType == "Booth_Agent") {
+      this.hasAccess = true;
+    }
   }
 
   ngOnInit() {

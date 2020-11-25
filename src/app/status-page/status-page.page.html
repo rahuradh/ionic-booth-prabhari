@@ -3,6 +3,11 @@
     <ion-title>Booth Statistics</ion-title>
   </ion-toolbar>
   <ion-toolbar>
+    <ion-buttons slot="end" *ngIf="hasAccess">
+      <ion-button color="dark" (click)="goToBoothAgent()">
+        <ion-icon slot="icon-only" name="people"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button color="dark" (click)="presentPopover()">
         <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>

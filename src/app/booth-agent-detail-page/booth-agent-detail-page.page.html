@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar class="ion-text-center">
+    <ion-title>Booth Agent Detail Page</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goToBoothAgentsPage()" color="dark">
+        <ion-icon slot="icon-only" name="arrow-back-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button shape="round" (click)="deleteUser()" *ngIf="readOnlyMode" color="dark">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" (click)="upateUser()" *ngIf="!readOnlyMode" color="dark">
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+      <ion-button shape="round" (click)="editUser()" *ngIf="readOnlyMode" color="dark">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Booth Agent's Name</ion-label>
+    <ion-input type="text" required [(ngModel)]="user.name" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Booth Agent's Phone Number</ion-label>
+    <ion-input type="tel" required [(ngModel)]="user.phoneNo" [readonly]="readOnlyMode"></ion-input>
+  </ion-item>
+  <ion-item class="ion-margin-top ion-margin-bottom">
+    <ion-label class="label-class" position="floating">Password</ion-label>
+    <ion-input [type]="passwordType" required [(ngModel)]="user.password" [readonly]="readOnlyMode"></ion-input>
+    <ion-button slot="end" (click)="showHidePassword()" color="light">
+      <ion-icon slot="icon-only" [name]="passwordEyeIcon"></ion-icon>
+    </ion-button>
+  </ion-item>
+</ion-content>

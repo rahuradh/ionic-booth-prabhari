@@ -34,16 +34,9 @@ export class SearchPagePage implements OnInit {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
 
-    if (this.accessType == "Full" || this.accessType == "Booth") {
+    if (this.accessType == "Full" || this.accessType == "Booth" || this.accessType == "Booth_Agent") {
       this.hasAccess = true;
     }
-  }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
   }
 
   ngOnInit() {
@@ -141,7 +134,9 @@ export class SearchPagePage implements OnInit {
     loader.dismiss();
   }
   openDetailPage(voter) {
-    this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+    if (this.accessType == "Full" || this.accessType == "Booth") {
+      this.navCtrl.navigateRoot("detail-page/" + this.boothCode + "/" + voter.serialNo + "/" + this.accessType + "/" + this.phoneNo + "/SearchPage");
+    }
   }
 
   async setVoteById(_id: string, isVoted: boolean) {

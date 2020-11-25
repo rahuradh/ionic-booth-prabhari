@@ -85,6 +85,14 @@ const routes: Routes = [
   {
     path: 'audit-log/:phoneNo',
     loadChildren: () => import('./audit-log/audit-log.module').then(m => m.AuditLogPageModule)
+  },
+  {
+    path: 'booth-agents-page/:boothCode/:accessType/:phoneNo/:callFrom',
+    loadChildren: () => import('./booth-agents-page/booth-agents-page.module').then(m => m.BoothAgentsPagePageModule)
+  },
+  {
+    path: 'booth-agent-detail-page/:boothCode/:accessType/:phoneNo/:callFrom/:mode/:boothAgentId',
+    loadChildren: () => import('./booth-agent-detail-page/booth-agent-detail-page.module').then(m => m.BoothAgentDetailPagePageModule)
   }
 ];
 

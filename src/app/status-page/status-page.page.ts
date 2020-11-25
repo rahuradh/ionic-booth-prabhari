@@ -4,7 +4,6 @@ import { Status } from '../models/status.model';
 import { LoadingController, ToastController, NavController, PopoverController, AnimationController, Platform } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { CandidatePopoverPage } from '../candidate-popover/candidate-popover.page';
-import { createAnimation, Animation } from '@ionic/core';
 
 declare var google;
 
@@ -53,6 +52,8 @@ export class StatusPagePage implements OnInit, AfterViewInit {
   private prePollVotersForCandidateList: any[] = [];
   private exitPollVotersForCandidateList: any[] = [];
 
+  hasAccess: boolean = false;
+
   @ViewChild('pollingStationNameDiv', { static: false }) pollingStationNameDiv: ElementRef;
 
   constructor(private actRouter: ActivatedRoute,
@@ -60,20 +61,16 @@ export class StatusPagePage implements OnInit, AfterViewInit {
     private toastCtrl: ToastController,
     private firestore: AngularFirestore,
     private animationCtrl: AnimationController,
-    private popoverController: PopoverController) {
+    private popoverController: PopoverController,
+    private navCtrl: NavController) {
     this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
-
+    if (this.accessType == "Full" || this.accessType == "Booth") {
+      this.hasAccess = true;
+    }
     this.getBoothDetailStatus();
-  }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
   }
 
   ngOnInit() { }
@@ -686,5 +683,9 @@ export class StatusPagePage implements OnInit, AfterViewInit {
       translucent: true
     });
     return await popover.present();
+  }
+
+  goToBoothAgent() {
+    this.navCtrl.navigateRoot("booth-agents-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
   }
 }

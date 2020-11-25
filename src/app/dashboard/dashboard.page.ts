@@ -38,13 +38,6 @@ export class DashboardPage implements OnInit {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.checkAccess(this.phoneNo);
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
     this.loadDistrictCombo();
@@ -267,6 +260,8 @@ export class DashboardPage implements OnInit {
         this.validateWardAccessAndPayment();
       } else if (this.accessType == "LocalBody") {
         this.validateLocalBodyAccessAndPayment();
+      } else if (this.accessType == "Booth_Agent") {
+        this.validateBoothAccessAndPayment();
       } else {
         this.navCtrl.navigateRoot("access-page/" + false + "/" + false + "/" + this.phoneNo);
       }

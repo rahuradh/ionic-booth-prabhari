@@ -25,13 +25,6 @@ export class ChangePasswordPagePage implements OnInit {
     this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
     this.getUser();
   }
-  successCallback(result) {
-    this.showToaster(result); // true - enabled, false - disabled
-  }
-
-  errorCallback(error) {
-    this.showToaster(error);
-  }
 
   ngOnInit() {
   }

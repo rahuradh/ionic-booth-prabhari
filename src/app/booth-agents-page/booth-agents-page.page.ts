@@ -1,20 +1,21 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
 import { CallNumber } from '@ionic-native/call-number/ngx';
-import { LoadingController, NavController, Platform, ToastController } from '@ionic/angular';
-import { User } from '../models/user.model';
+import { LoadingController, ToastController, NavController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-app-users-page',
-  templateUrl: './app-users-page.page.html',
-  styleUrls: ['./app-users-page.page.scss'],
+  selector: 'app-booth-agents-page',
+  templateUrl: './booth-agents-page.page.html',
+  styleUrls: ['./booth-agents-page.page.scss'],
 })
-export class AppUsersPagePage implements OnInit {
-  phoneNo: string;
+export class BoothAgentsPagePage implements OnInit {
+
+  boothCode: string;
   accessType: string;
   accessCode: string;
+  phoneNo: string;
+  callFrom: string;
   userList: any = [];
 
   constructor(private loadingCtrl: LoadingController,
@@ -23,35 +24,38 @@ export class AppUsersPagePage implements OnInit {
     private navCtrl: NavController,
     private actRouter: ActivatedRoute,
     private callNumber: CallNumber) {
-    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.boothCode = this.actRouter.snapshot.paramMap.get("boothCode");
     this.accessType = this.actRouter.snapshot.paramMap.get("accessType");
-    this.accessCode = this.actRouter.snapshot.paramMap.get("accessCode");
-    this.loadUserList();
+    this.phoneNo = this.actRouter.snapshot.paramMap.get("phoneNo");
+    this.callFrom = this.actRouter.snapshot.paramMap.get("callFrom");
+    this.accessCode = this.boothCode.substring(0, 6);
+
+    this.loadBoothAgentList();
   }
 
   ngOnInit() {
   }
 
-  goToAccessManager() {
-    this.navCtrl.navigateRoot("access-manager/" + this.phoneNo);
+  goToStatusPage() {
+    this.navCtrl.navigateRoot("home/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/status-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage");
   }
 
-  openUserDetailPage(user) {
-    this.navCtrl.navigateRoot("app-user-detail-page/" + this.phoneNo + "/" + this.accessType + "/" + this.accessCode + "/" + user.id);
+  openBoothAgentDetailPage(user) {
+    this.navCtrl.navigateRoot("booth-agent-detail-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/edit" + "/" + user.id);
   }
 
-  async loadUserList() {
+  addBoothAgent() {
+    this.navCtrl.navigateRoot("booth-agent-detail-page/" + this.boothCode + "/" + this.accessType + "/" + this.phoneNo + "/StatusPage" + "/add" + "/" + "boothAgentId");
+  }
+
+  async loadBoothAgentList() {
     this.userList = [];
     let loader = await this.loadingCtrl.create({
       message: "Please wait...."
     });
     loader.present();
     try {
-      var accessCodeValue = "";
-      if (this.accessType != "Full") {
-        accessCodeValue = this.accessCode;
-      }
-      this.firestore.collection("usersList", ref => ref.where('accessType', '==', this.accessType).where('accessCode', '==', accessCodeValue)).snapshotChanges().subscribe(data => {
+      this.firestore.collection("usersList", ref => ref.where('accessType', '==', 'Booth_Agent').where('accessCode', '==', this.accessCode)).snapshotChanges().subscribe(data => {
         this.userList = data.map(user => {
           return {
             id: String(user.payload.doc.id),
@@ -98,5 +102,6 @@ export class AppUsersPagePage implements OnInit {
     await this.firestore.doc(`usersList/${_id}`).update({ isAdminApproved: isAdminApproved });
     loader.dismiss();
   }
+
 
 }
